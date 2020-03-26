@@ -170,7 +170,7 @@ public class UserController {
 	@PostMapping
 	public Map<String, Set<String>> addUser(@Valid @RequestBody User user, BindingResult result) {
 		
-		//validating address
+		//validating address using custom validator
 		uv.validate(user, result);
 		System.out.println("validation result is " + result);
 		
@@ -281,7 +281,7 @@ public class UserController {
 	@ApiOperation(value="Updates user by id", tags= {"User"})
 	@PutMapping
 	public ResponseEntity<Map> updateUser(@Valid @RequestBody User user, BindingResult result) {
-		//System.out.println(user);
+		//validating address using custom validator
 		uv.validate(user, result);
 		System.out.println("validation result is " + result);
 		
