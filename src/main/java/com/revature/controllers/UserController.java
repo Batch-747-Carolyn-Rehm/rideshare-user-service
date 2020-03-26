@@ -9,9 +9,10 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.validation.Valid;
-import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,12 +27,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.maps.errors.ApiException;
-import com.revature.Driver;
-import com.revature.beans.Batch;
 import com.revature.beans.User;
 import com.revature.services.BatchService;
 import com.revature.services.DistanceService;
 import com.revature.services.UserService;
+import com.revature.validators.UserValidator;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -59,6 +59,9 @@ public class UserController {
 	
 	@Autowired
 	private DistanceService ds;
+	
+	@Autowired
+	private UserValidator uv;
 	
 	/**
 	 * HTTP GET method (/users)
@@ -167,6 +170,10 @@ public class UserController {
 	@PostMapping
 	public Map<String, Set<String>> addUser(@Valid @RequestBody User user, BindingResult result) {
 		
+		//validating address
+		uv.validate(user, result);
+		System.out.println("validation result is " + result);
+		
 		System.out.println(user.isDriver());
 		 Map<String, Set<String>> errors = new HashMap<>();
 		 
@@ -273,9 +280,18 @@ public class UserController {
 	
 	@ApiOperation(value="Updates user by id", tags= {"User"})
 	@PutMapping
-	public User updateUser(@Valid @RequestBody User user) {
+	public ResponseEntity<Map> updateUser(@Valid @RequestBody User user, BindingResult result) {
 		//System.out.println(user);
-		return us.updateUser(user);
+		uv.validate(user, result);
+		System.out.println("validation result is " + result);
+		
+		Map<String, String> validationInfo = new HashMap<>();
+		for (FieldError error: result.getFieldErrors()) {
+			validationInfo.put(error.getField(), error.getCode());
+		}
+		
+		us.updateUser(user);
+		return new ResponseEntity<>(validationInfo, HttpStatus.OK);
 	}
 	
 	/**
