@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.validation.Valid;
-import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -26,11 +25,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.maps.errors.ApiException;
-import com.revature.Driver;
-import com.revature.beans.Batch;
 import com.revature.beans.User;
 import com.revature.services.BatchService;
 import com.revature.services.DistanceService;
+import com.revature.services.FilterService;
 import com.revature.services.UserService;
 
 import io.swagger.annotations.Api;
@@ -59,6 +57,9 @@ public class UserController {
 	
 	@Autowired
 	private DistanceService ds;
+	
+	@Autowired
+	private FilterService fs;
 	
 	/**
 	 * HTTP GET method (/users)
@@ -113,6 +114,38 @@ public class UserController {
 		//return ds.distanceMatrix();	
 		
 	}
+	
+	//Get Drivers by different filters
+	
+	@ApiOperation(value="Returns drivers by filter",tags= {"User"})
+	@GetMapping("/filter/{filter_type}")
+	public List<User> getFilteredDrivers(@PathVariable("filter_type") String filter_type,
+			@RequestBody User u) throws ApiException, InterruptedException, IOException{
+		List<User> drivers = new ArrayList<User>();
+		switch(filter_type) {
+		//TODO: get current location in request body
+		case "batch":{
+			drivers = fs.filterByBatch(u.getBatch().getBatchNumber());
+			break;
+		}
+		case "zipcode":{
+			drivers = fs.filterByZipCode(u.gethZip());
+			break;
+		}
+		case "city":{
+			drivers = fs.filterByCity(u.gethCity());
+			break;
+		}
+		default:{
+			//TODO: add people in UTA to the H2 db
+			drivers = fs.filterByRecommendation(u.gethAddress(), 
+					u.getBatch().getBatchNumber());
+			break;
+		}
+		}
+		return drivers;
+	}
+	
 	
 	/**
 	 * HTTP GET method (/users)
