@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.revature.beans.User;
 import com.revature.repositories.UserRepository;
 import com.revature.services.UserService;
@@ -36,6 +35,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public List<User> getUsers() {
+		
 		return ur.findAll();
 	}
 
