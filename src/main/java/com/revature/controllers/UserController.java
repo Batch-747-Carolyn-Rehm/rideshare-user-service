@@ -131,30 +131,28 @@ public class UserController {
 		Set<User> totalDrivers = new HashSet<User>();
 		String[] fullAddress = filters.getLocation().split(", ");
 		String address = fullAddress[0], city = fullAddress[1], zipCode = fullAddress[2];
-		for(String filter : filters.getFilterTypes()) {
-			Set<User> tempDrivers = new HashSet<User>();
-			//drivers are calculated based on their home address (current location)
-			switch(filter) {
-			case "batch":{
-				tempDrivers = fs.filterByBatch(filters.getBatchId());
-				break;
-			}
-			case "zipcode":{
-				tempDrivers = fs.filterByZipCode(zipCode);
-				break;
-			}
-			case "city":{
-				tempDrivers = fs.filterByCity(city);
-				break;
-			}
-			default:{
-				tempDrivers = fs.filterByRecommendation(address, 
-						filters.getBatchId());
-				break;
-			}
-			}
-			for(User driver : tempDrivers) {
-				totalDrivers.add(driver);
+		//recommendation filter if no input filters are provided
+		if(filters.getFilterTypes().size() == 0) {
+			totalDrivers = fs.filterByRecommendation(address, filters.getBatchId());
+		} 
+		//add drivers based on filter criteria
+		else {
+			for(String filter : filters.getFilterTypes()) {
+				//drivers are calculated based on their home address (current location)
+				switch(filter) {
+				case "batch":{
+					totalDrivers = fs.filterByBatch(filters.getBatchId(), totalDrivers);
+					break;
+				}
+				case "zipcode":{
+					totalDrivers = fs.filterByZipCode(zipCode, totalDrivers);
+					break;
+				}
+				case "city":{
+					totalDrivers = fs.filterByCity(city, totalDrivers);
+					break;
+				}
+				}
 			}
 		}
 		return totalDrivers;
