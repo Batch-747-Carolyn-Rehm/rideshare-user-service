@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.maps.errors.ApiException;
+import com.revature.beans.Filter;
 import com.revature.beans.User;
 import com.revature.services.BatchService;
 import com.revature.services.DistanceService;
@@ -118,32 +119,39 @@ public class UserController {
 	//Get Drivers by different filters
 	
 	@ApiOperation(value="Returns drivers by filter",tags= {"User"})
-	@GetMapping("/filter/{filter_type}")
-	public List<User> getFilteredDrivers(@PathVariable("filter_type") String filter_type,
-			@RequestBody User u) throws ApiException, InterruptedException, IOException{
-		List<User> drivers = new ArrayList<User>();
-		switch(filter_type) {
-		//TODO: get current location in request body
-		case "batch":{
-			drivers = fs.filterByBatch(u.getBatch().getBatchNumber());
-			break;
+	@GetMapping("/filter")
+	public Set<User> getFilteredDrivers(@RequestBody Filter filters)
+			throws ApiException, InterruptedException, IOException{
+		Set<User> totalDrivers = new HashSet<User>();
+		String[] fullAddress = filters.getLocation().split(", ");
+		String address = fullAddress[0], city = fullAddress[1], zipCode = fullAddress[2];
+		for(String filter : filters.getFilterTypes()) {
+			Set<User> tempDrivers = new HashSet<User>();
+			//drivers are calculated based on their home address (current location)
+			switch(filter) {
+			case "batch":{
+				tempDrivers = fs.filterByBatch(filters.getBatchId());
+				break;
+			}
+			case "zipcode":{
+				tempDrivers = fs.filterByZipCode(zipCode);
+				break;
+			}
+			case "city":{
+				tempDrivers = fs.filterByCity(city);
+				break;
+			}
+			default:{
+				tempDrivers = fs.filterByRecommendation(address, 
+						filters.getBatchId());
+				break;
+			}
+			}
+			for(User driver : tempDrivers) {
+				totalDrivers.add(driver);
+			}
 		}
-		case "zipcode":{
-			drivers = fs.filterByZipCode(u.gethZip());
-			break;
-		}
-		case "city":{
-			drivers = fs.filterByCity(u.gethCity());
-			break;
-		}
-		default:{
-			//TODO: add people in UTA to the H2 db
-			drivers = fs.filterByRecommendation(u.gethAddress(), 
-					u.getBatch().getBatchNumber());
-			break;
-		}
-		}
-		return drivers;
+		return totalDrivers;
 	}
 	
 	
