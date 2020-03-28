@@ -2,7 +2,9 @@ package com.revature.services.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,11 +24,11 @@ public class FilterServiceImpl implements FilterService {
 	@Autowired
 	private UserService us;
 
-	private List<User> drivers = null;
+	private Set<User> drivers = null;
 
 	@Override
-	public List<User> filterByBatch(int batchId) {
-		drivers = new ArrayList<>();
+	public Set<User> filterByBatch(int batchId) {
+		drivers = new HashSet<User>();
 		for (User u : us.getActiveDrivers()) {
 			if (u.getBatch().getBatchNumber() == batchId && u.isAcceptingRides()) {
 				drivers.add(u);
@@ -36,19 +38,19 @@ public class FilterServiceImpl implements FilterService {
 	}
 
 	@Override
-	public List<User> filterByZipCode(String zip) {
-		drivers = new ArrayList<>();
+	public Set<User> filterByZipCode(String zip) {
+		drivers = new HashSet<User>();
 		for (User u : us.getActiveDrivers()) {
 			if (u.gethZip().equals(zip) && u.isAcceptingRides()) {
-
+				drivers.add(u);
 			}
 		}
 		return drivers;
 	}
 
 	@Override
-	public List<User> filterByCity(String city) {
-		drivers = new ArrayList<>();
+	public Set<User> filterByCity(String city) {
+		drivers = new HashSet<User>();
 		for (User u : us.getActiveDrivers()) {
 			if (u.gethCity().equals(city) && u.isAcceptingRides()) {
 				drivers.add(u);
@@ -58,7 +60,8 @@ public class FilterServiceImpl implements FilterService {
 	}
 
 	@Override
-	public List<User> filterByRecommendation(String address, int batchId) throws ApiException, InterruptedException, IOException {
+	public Set<User> filterByRecommendation(String address, int batchId) throws ApiException, InterruptedException, IOException {
+		drivers = new HashSet<User>();
 		String[] origins = { address };
 		List<String> destinationList = new ArrayList<String>();
 		for (User u : us.getActiveDrivers()) {
@@ -69,7 +72,10 @@ public class FilterServiceImpl implements FilterService {
 		}
 		String[] destinations = new String[destinationList.size()];
 		destinations = destinationList.toArray(destinations);
-		return ds.distanceMatrix(origins, destinations);
+		for(User u : ds.distanceMatrix(origins, destinations)) {
+			drivers.add(u);
+		}
+		return drivers;
 	}
 
 }
