@@ -22,10 +22,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.maps.errors.ApiException;
 import com.revature.beans.Filter;
 import com.revature.beans.User;
@@ -67,6 +69,8 @@ public class UserController {
 
 	@Autowired
 	private FilterService fs;
+	
+	private ObjectMapper mapper = new ObjectMapper();
 	
 	/**
 	 * HTTP GET method (/users)
@@ -125,8 +129,8 @@ public class UserController {
 	//Get Drivers by different filters
 	
 	@ApiOperation(value="Returns drivers by filter",tags= {"User"})
-	@GetMapping("/filter")
-	public Set<User> getFilteredDrivers(@RequestBody Filter filters)
+	@PostMapping("/filter")
+	public ResponseEntity<String> getFilteredDrivers(@RequestBody Filter filters)
 			throws ApiException, InterruptedException, IOException{
 		Set<User> totalDrivers = new HashSet<User>();
 		String[] fullAddress = filters.getLocation().split(", ");
@@ -155,7 +159,7 @@ public class UserController {
 				}
 			}
 		}
-		return totalDrivers;
+		return ResponseEntity.ok().body("{ \"Drivers\": " + mapper.writeValueAsString(totalDrivers)+"}");
 	}
 	
 	
