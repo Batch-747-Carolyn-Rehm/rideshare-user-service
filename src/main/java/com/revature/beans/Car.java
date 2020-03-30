@@ -102,7 +102,7 @@ public class Car implements Serializable {
 	}
 
 	public void setSeatsAvailable(int seatsAvailable) {
-		this.seats = seatsAvailable;
+		this.seatsAvailable = seatsAvailable;
 	}
 
 	public String getMake() {
