@@ -1,4 +1,4 @@
-package com.revature.beans.geolocationResponse;
+package com.revature.beans.geoCodingResponse;
 
 import java.io.Serializable;
 

@@ -6,7 +6,7 @@ import org.springframework.validation.Validator;
 import org.springframework.web.client.RestTemplate;
 
 import com.revature.beans.User;
-import com.revature.beans.geolocationResponse.GeoLocationResponse;
+import com.revature.beans.geoCodingResponse.GeoCodingReponse;
 
 @Component
 public class UserValidator implements Validator {
@@ -35,7 +35,7 @@ public class UserValidator implements Validator {
 		
 		RestTemplate restTemplate = new RestTemplate();
 		String url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "&key=" + apiKey;
-		GeoLocationResponse gr = restTemplate.getForObject(url, GeoLocationResponse.class);
+		GeoCodingReponse gr = restTemplate.getForObject(url, GeoCodingReponse.class);
 		
 		if (gr.getResults().size() == 0 || gr.getResults().size() > 1) {
 			errors.rejectValue("hZip", "Invalid");
