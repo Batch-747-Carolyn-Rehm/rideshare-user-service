@@ -91,13 +91,13 @@ public class User implements Serializable {
 	//removed the @NotBlank annotation becasue the field is actually optional
 	@Column(name = "w_address")
 	private String wAddress;
-	@NotBlank
+	//removed the @NotBlank annotation becasue the field is actually optional
 	@Column(name = "w_city")
 	private String wCity;
-	@NotBlank
+	//removed the @NotBlank annotation becasue the field is actually optional
 	@Column(name = "w_zip")
 	private String wZip;
-	@NotBlank
+	//removed the @NotBlank annotation becasue the field is actually optional
 	@Column(name = "w_state")
 	private String wState;
 	
