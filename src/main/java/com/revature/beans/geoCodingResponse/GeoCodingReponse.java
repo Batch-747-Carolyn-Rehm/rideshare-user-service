@@ -1,4 +1,4 @@
-package com.revature.beans.geolocationResponse;
+package com.revature.beans.geoCodingResponse;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GeoLocationResponse implements Serializable {
+public class GeoCodingReponse implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	private ArrayList<Result> results;
 	private String status;
 	
-	public GeoLocationResponse() {
+	public GeoCodingReponse() {
 		super();
 	}
 
@@ -50,7 +50,7 @@ public class GeoLocationResponse implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		GeoLocationResponse other = (GeoLocationResponse) obj;
+		GeoCodingReponse other = (GeoCodingReponse) obj;
 		if (results == null) {
 			if (other.results != null)
 				return false;
