@@ -26,9 +26,9 @@ public class UserValidator implements Validator {
 		if (user.getwAddress() != null) {
 			String[] splittedWAddress = user.getwAddress().split(" ");
 			String joinedWAddress = String.join("+", splittedWAddress);
-			address = joinedHAddress + joinedWAddress + user.gethCity() + user.gethState() + user.gethZip();
+			address = joinedHAddress + "+" + joinedWAddress + "+" + user.gethCity() + "+" + user.gethState() + "+" + user.gethZip();
 		} else {
-			address = joinedHAddress + user.gethCity() + user.gethState() + user.gethZip();
+			address = joinedHAddress + "+" + user.gethCity() + "+" + user.gethState() + "+" + user.gethZip();
 		}
 		
 		String apiKey = System.getenv("googleMapAPIKey");
@@ -37,13 +37,13 @@ public class UserValidator implements Validator {
 		String url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "&key=" + apiKey;
 		GeoCodingReponse gr = restTemplate.getForObject(url, GeoCodingReponse.class);
 		
-		if (gr.getResults().size() == 0 || gr.getResults().size() > 1) {
+		if (gr.getResults().size() == 0 || gr.getResults().size() > 1 || gr.getResults().size() == 1 && gr.getResults().get(0).isPartialMatch() == true) {
 			errors.rejectValue("hZip", "Invalid");
 			errors.rejectValue("hCity", "Invalid");
 			errors.rejectValue("hAddress", "Invalid");
 			errors.rejectValue("wAddress", "Invalid");
-			errors.rejectValue("hState", "Invalid");
-		}
+			errors.rejectValue("hState", "Invalid");	
+		} 
 	}
 
 	

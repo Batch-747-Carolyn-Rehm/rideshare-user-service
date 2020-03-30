@@ -88,7 +88,7 @@ public class User implements Serializable {
 	@NotBlank
 	@Column(name = "h_state")
 	private String hState;
-	@NotBlank
+	//removed the @NotBlank annotation becasue the field is actually optional
 	@Column(name = "w_address")
 	private String wAddress;
 	@NotBlank
