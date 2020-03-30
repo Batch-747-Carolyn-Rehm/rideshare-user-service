@@ -2,6 +2,8 @@ package com.revature.beans.geoCodingResponse;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Geometry implements Serializable {
 
 	/**
@@ -9,7 +11,7 @@ public class Geometry implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Location location;
-	private String location_type;
+	private String locationType;
 	private Viewport viewport;
 	
 	public Geometry() {
@@ -24,20 +26,22 @@ public class Geometry implements Serializable {
 		this.location = location;
 	}
 
-	public String getLocation_type() {
-		return location_type;
-	}
-
-	public void setLocation_type(String location_type) {
-		this.location_type = location_type;
-	}
-
 	public Viewport getViewport() {
 		return viewport;
 	}
 
 	public void setViewport(Viewport viewport) {
 		this.viewport = viewport;
+	}
+
+	@JsonProperty("location_type")
+	public String getLocationType() {
+		return locationType;
+	}
+
+	@JsonProperty("location_type")
+	public void setLocationType(String locationType) {
+		this.locationType = locationType;
 	}
 
 }

@@ -3,37 +3,34 @@ package com.revature.beans.geoCodingResponse;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Result implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private ArrayList<AddressComponent> address_components;
-	private String formatted_address;
+	private ArrayList<AddressComponent> addressComponents;
+	private String formattedAddress;
 	private Geometry geometry;
-	private String place_id;
-	private Plus_code plus_code;
+	private String placeId;
+	private PlusCode plusCode;
 	private ArrayList<String> types;
+	private boolean partialMatch;
 	
+	@JsonProperty("partial_match")
+	public boolean isPartialMatch() {
+		return partialMatch;
+	}
+
+	@JsonProperty("partial_match")
+	public void setPartialMatch(boolean partialMatch) {
+		this.partialMatch = partialMatch;
+	}
+
 	public Result() {
 		super();
-	}
-
-	public ArrayList<AddressComponent> getAddress_components() {
-		return address_components;
-	}
-
-	public void setAddress_components(ArrayList<AddressComponent> address_components) {
-		this.address_components = address_components;
-	}
-
-	public String getFormatted_address() {
-		return formatted_address;
-	}
-
-	public void setFormatted_address(String formatted_address) {
-		this.formatted_address = formatted_address;
 	}
 
 	public Geometry getGeometry() {
@@ -44,28 +41,52 @@ public class Result implements Serializable {
 		this.geometry = geometry;
 	}
 
-	public String getPlace_id() {
-		return place_id;
-	}
-
-	public void setPlace_id(String place_id) {
-		this.place_id = place_id;
-	}
-
-	public Plus_code getPlus_code() {
-		return plus_code;
-	}
-
-	public void setPlus_code(Plus_code plus_code) {
-		this.plus_code = plus_code;
-	}
-
 	public ArrayList<String> getTypes() {
 		return types;
 	}
 
 	public void setTypes(ArrayList<String> types) {
 		this.types = types;
+	}
+
+	@JsonProperty("plus_code")
+	public PlusCode getPlusCode() {
+		return plusCode;
+	}
+
+	@JsonProperty("plus_code")
+	public void setPlusCode(PlusCode plusCode) {
+		this.plusCode = plusCode;
+	}
+
+	@JsonProperty("address_components")
+	public ArrayList<AddressComponent> getAddressComponents() {
+		return addressComponents;
+	}
+
+	@JsonProperty("address_components")
+	public void setAddressComponents(ArrayList<AddressComponent> addressComponents) {
+		this.addressComponents = addressComponents;
+	}
+
+	@JsonProperty("formatted_address")
+	public String getFormattedAddress() {
+		return formattedAddress;
+	}
+
+	@JsonProperty("formatted_address")
+	public void setFormattedAddress(String formattedAddress) {
+		this.formattedAddress = formattedAddress;
+	}
+
+	@JsonProperty("place_id")
+	public String getPlaceId() {
+		return placeId;
+	}
+
+	@JsonProperty("place_id")
+	public void setPlaceId(String placeId) {
+		this.placeId = placeId;
 	}
 	
 }
