@@ -197,6 +197,23 @@ public class Car implements Serializable {
 		return "Car [carId=" + carId + ", color=" + color + ", seats=" + seats + ", seatsAvailable=" + seatsAvailable
 				+ ", make=" + make + ", model=" + model + ", year=" + year + ", user=" + user + "]";
 	}
+
+	public boolean validateCar() {
+		return validateMakeModelYearSeats() && validateAvailableSeats();
+	}
+
+	private boolean validateAvailableSeats() {
+		// make sure available seats isn't more than seats or negative
+		return seatsAvailable <= seats && seatsAvailable >= 0;
+	}
+
+	private boolean validateMakeModelYearSeats() {
+		// TODO should actually attempt to verify this car exists and the number of
+		// seats is correct
+		// for now, let's just make sure the number of seats isn't 0 or negative.
+		return seats > 0;
+	}
+	
 	
 }
 

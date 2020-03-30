@@ -105,10 +105,15 @@ public class CarController {
 	
 	@ApiOperation(value="Updates car by id", tags= {"Car"})
 	@PutMapping("/{id}")
-	public Car updateCar(@Valid @RequestBody Car car) {
-		
-		return cs.updateCar(car);
+	public ResponseEntity<Car> updateCar(@Valid @RequestBody Car car) {
+		if(cs.updateCar(car)) {
+			return new ResponseEntity<>(car, HttpStatus.ACCEPTED);
+		}else {
+			return new ResponseEntity<>(car, HttpStatus.BAD_REQUEST);
+		}
+			
 	}
+	
 	
 	/**
 	 * HTTP DELETE method (/cars/{id})
