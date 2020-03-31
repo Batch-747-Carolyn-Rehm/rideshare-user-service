@@ -1,12 +1,16 @@
 package com.revature.controllers;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -86,32 +90,44 @@ public class CarController {
 	 * HTTP POST method (/cars)
 	 * 
 	 * @param car represents the new Car object being sent.
-	 * @return The newly created object with a 201 code.
+	 * @return The validation information with an OK status.
 	 */
 	
 	@ApiOperation(value="Adds a new car", tags= {"Car"})
 	@PostMapping
-	public ResponseEntity<Car> addCar(@Valid @RequestBody Car car) {
+	public ResponseEntity<Map> addCar(@Valid @RequestBody Car car, BindingResult result) {
+		Map<String, String> validationInfo = new HashMap<>();
+		for (FieldError error: result.getFieldErrors()) {
+			validationInfo.put(error.getField(), error.getCode());
+		}
 		
-		return new ResponseEntity<>(cs.addCar(car), HttpStatus.CREATED);
+		if (validationInfo.size() == 0) {
+			cs.addCar(car);
+		}
+		
+		return new ResponseEntity<>(validationInfo, HttpStatus.OK);
 	}
 	
 	/**
 	 * HTTP PUT method (/cars)
 	 * 
 	 * @param car represents the updated Car object being sent.
-	 * @return The newly updated object.
+	 * @return The validation information with an OK status.
 	 */
 	
 	@ApiOperation(value="Updates car by id", tags= {"Car"})
 	@PutMapping("/{id}")
-	public ResponseEntity<Car> updateCar(@Valid @RequestBody Car car) {
-		if(cs.updateCar(car)) {
-			return new ResponseEntity<>(car, HttpStatus.ACCEPTED);
-		}else {
-			return new ResponseEntity<>(car, HttpStatus.BAD_REQUEST);
+	public ResponseEntity<Map> updateCar(@Valid @RequestBody Car car, BindingResult result) {
+		Map<String, String> validationInfo = new HashMap<>();
+		for (FieldError error: result.getFieldErrors()) {
+			validationInfo.put(error.getField(), error.getCode());
 		}
-			
+		
+		if (validationInfo.size() == 0) {
+			cs.updateCar(car);
+		}
+		
+		return new ResponseEntity<>(validationInfo, HttpStatus.OK);
 	}
 	
 	
