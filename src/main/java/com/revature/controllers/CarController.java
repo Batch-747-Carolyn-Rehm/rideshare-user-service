@@ -90,7 +90,7 @@ public class CarController {
 	 * HTTP POST method (/cars)
 	 * 
 	 * @param car represents the new Car object being sent.
-	 * @return The newly created object with a 201 code.
+	 * @return The validation information with an OK status.
 	 */
 	
 	@ApiOperation(value="Adds a new car", tags= {"Car"})
@@ -101,7 +101,10 @@ public class CarController {
 			validationInfo.put(error.getField(), error.getCode());
 		}
 		
-		cs.addCar(car);
+		if (validationInfo.size() == 0) {
+			cs.addCar(car);
+		}
+		
 		return new ResponseEntity<>(validationInfo, HttpStatus.OK);
 	}
 	
@@ -109,7 +112,7 @@ public class CarController {
 	 * HTTP PUT method (/cars)
 	 * 
 	 * @param car represents the updated Car object being sent.
-	 * @return The newly updated object.
+	 * @return The validation information with an OK status.
 	 */
 	
 	@ApiOperation(value="Updates car by id", tags= {"Car"})
@@ -120,7 +123,10 @@ public class CarController {
 			validationInfo.put(error.getField(), error.getCode());
 		}
 		
-		cs.updateCar(car);
+		if (validationInfo.size() == 0) {
+			cs.updateCar(car);
+		}
+		
 		return new ResponseEntity<>(validationInfo, HttpStatus.OK);
 	}
 	
