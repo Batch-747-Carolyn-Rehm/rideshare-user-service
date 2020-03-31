@@ -152,6 +152,7 @@
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+<<<<<<< HEAD
 		
 		<dependency>
             <groupId>org.aspectj</groupId>
@@ -170,6 +171,8 @@
   		    <artifactId>log4j</artifactId>
   		    <version>1.2.17</version>
   	    </dependency>
+=======
+>>>>>>> f5bae56066f8d6df0d5bb14d78d8cd437b3d9d9f
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
