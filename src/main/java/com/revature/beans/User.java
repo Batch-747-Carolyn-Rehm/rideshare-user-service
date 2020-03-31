@@ -101,12 +101,10 @@ public class User implements Serializable {
 	 * REFACTORED 03/30/2020
 	 * --------------------------
 	 * */
-	@Transient 
-	@Column(name = "distance_meters")
+	@Transient
 	private double distance;
 	
 	@Transient
-	@Column(name = "duration_sec")
 	private double duration; 
 	
 	@OneToOne
