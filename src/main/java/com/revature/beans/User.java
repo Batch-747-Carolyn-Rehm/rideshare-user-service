@@ -22,6 +22,13 @@ import org.springframework.stereotype.Component;
 
 import org.springframework.stereotype.Component;
 
+/**
+ * User class. All users have an id, username, batch, firstname,
+ * lastname, email, phone, address, city, state, zip.
+ * 
+ * @author Vytautas Klimavicius
+ *
+ */
 @Component
 @Entity
 @Table(name="users")
