@@ -9,9 +9,10 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.validation.Valid;
-import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,12 +27,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.maps.errors.ApiException;
-import com.revature.Driver;
-import com.revature.beans.Batch;
 import com.revature.beans.User;
 import com.revature.services.BatchService;
 import com.revature.services.DistanceService;
 import com.revature.services.UserService;
+import com.revature.validators.UserValidator;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -59,6 +59,9 @@ public class UserController {
 	
 	@Autowired
 	private DistanceService ds;
+	
+	@Autowired
+	private UserValidator uv;
 	
 	/**
 	 * HTTP GET method (/users)
@@ -165,101 +168,21 @@ public class UserController {
 	
 	@ApiOperation(value="Adds a new user", tags= {"User"})
 	@PostMapping
-	public Map<String, Set<String>> addUser(@Valid @RequestBody User user, BindingResult result) {
+	public ResponseEntity<Map> addUser(@Valid @RequestBody User user, BindingResult result) {
 		
-		 Map<String, Set<String>> errors = new HashMap<>();
-		 
-		 for (FieldError fieldError : result.getFieldErrors()) {
-		      String code = fieldError.getCode();
-		      String field = fieldError.getField();
-		      if (code.equals("NotBlank") || code.equals("NotNull")) {
-//		    	  
-		    	  switch (field) {
-		    	  case "userName":
-		    		  errors.computeIfAbsent(field, key -> new HashSet<>()).add("Username field required");
-		    		  break;
-		    	  case "firstName":
-		    		  errors.computeIfAbsent(field, key -> new HashSet<>()).add("First name field required");
-		    		  break;
-		    	  case "lastName":
-		    		  errors.computeIfAbsent(field, key -> new HashSet<>()).add("Last name field required");
-		    		  break;
-		    	  case "wAddress":
-		    		  errors.computeIfAbsent(field, key -> new HashSet<>()).add("Work address field required");
-		    		  break;
-		    	  case "wState":
-		    	  case "hState":
-		    		  errors.computeIfAbsent(field, key -> new HashSet<>()).add("State field required");
-		    		  break;
-		    	  case "phoneNumber":
-		    		  errors.computeIfAbsent(field, key -> new HashSet<>()).add("Phone number field required");
-		    		  break;
-		    	  case "hAddress":
-		    		  errors.computeIfAbsent(field, key -> new HashSet<>()).add("Home address field required");
-		    		  break;
-		    	  case "hZip":
-		    	  case "wZip":
-		    		  errors.computeIfAbsent(field, key -> new HashSet<>()).add("Zip code field required");
-		    		  break;
-		    	  case "hCity":
-		    	  case "wCity":
-		    		  errors.computeIfAbsent(field, key -> new HashSet<>()).add("City field required");
-		    		  break;
-		    	  default:
-		    		  errors.computeIfAbsent(field, key -> new HashSet<>()).add(field+" required");
-		    	  }
-		      }
-		      //username custom error message
-		      else if (code.equals("Size") && field.equals("userName")) {
-		          errors.computeIfAbsent(field, key -> new HashSet<>()).add("Username must be between 3 and 12 characters in length");
-		      }
-		      else if (code.equals("Pattern") && field.equals("userName")) {
-		          errors.computeIfAbsent(field, key -> new HashSet<>()).add("Username may not have any illegal characters such as $@-");
-		      }
-		      else if (code.equals("Valid") && field.equals("userName")) {
-		          errors.computeIfAbsent(field, key -> new HashSet<>()).add("Invalid username");
-		      }
-		      //first name custom error message
-		      else if (code.equals("Size") && field.equals("firstName")) {
-		          errors.computeIfAbsent(field, key -> new HashSet<>()).add("First name cannot be more than 30 characters in length");
-		      }
-		      else if (code.equals("Pattern") && field.equals("firstName")) {
-		          errors.computeIfAbsent(field, key -> new HashSet<>()).add("First name allows only 1 space or hyphen and no illegal characters");
-		      }
-		      else if (code.equals("Valid") && field.equals("firstName")) {
-		          errors.computeIfAbsent(field, key -> new HashSet<>()).add("Invalid first name");
-		      }
-		      //last name custom error message
-		      else if (code.equals("Size") && field.equals("lastName")) {
-		          errors.computeIfAbsent(field, key -> new HashSet<>()).add("Last name cannot be more than 30 characters in length");
-		      }
-		      else if (code.equals("Pattern") && field.equals("lastName")) {
-		          errors.computeIfAbsent(field, key -> new HashSet<>()).add("Last name allows only 1 space or hyphen and no illegal characters");
-		      }
-		      else if (code.equals("Valid") && field.equals("lastName")) {
-		          errors.computeIfAbsent(field, key -> new HashSet<>()).add("Invalid last name");
-		      }
-		      //email custom error messages
-		      else if (code.equals("Email") && field.equals("email")) {
-		              errors.computeIfAbsent(field, key -> new HashSet<>()).add("Invalid Email");
-		      }
-		      else if (code.equals("Pattern") && field.equals("email")) {
-	              errors.computeIfAbsent(field, key -> new HashSet<>()).add("Invalid Email");
-		      }
-		      //phone number custom error messages
-		      else if (code.equals("Pattern") && field.equals("phoneNumber")) {
-	              errors.computeIfAbsent(field, key -> new HashSet<>()).add("Invalid Phone Number");
-		      }
-		    }
-
-			if (errors.isEmpty()) {
-				
-				user.setBatch(bs.getBatchByNumber(user.getBatch().getBatchNumber()));
-		 		us.addUser(user);
-		 		
-
-		 	}
-		    return errors;
+		uv.validate(user, result);
+		
+		Map<String, String> validationInfo = new HashMap<>();
+		for (FieldError error: result.getFieldErrors()) {
+			validationInfo.put(error.getField(), error.getCode());
+		}
+		
+		if (validationInfo.size() == 0) {
+			user.setBatch(bs.getBatchByNumber(user.getBatch().getBatchNumber()));
+	 		us.addUser(user);
+		}
+		
+		return new ResponseEntity<>(validationInfo, HttpStatus.OK);
 		
 	}
 	
@@ -272,9 +195,21 @@ public class UserController {
 	
 	@ApiOperation(value="Updates user by id", tags= {"User"})
 	@PutMapping
-	public User updateUser(@Valid @RequestBody User user) {
-		//System.out.println(user);
-		return us.updateUser(user);
+	public ResponseEntity<Map> updateUser(@Valid @RequestBody User user, BindingResult result) {
+		//validating address using custom validator
+		uv.validate(user, result);
+		System.out.println("validation result is " + result);
+		
+		Map<String, String> validationInfo = new HashMap<>();
+		for (FieldError error: result.getFieldErrors()) {
+			validationInfo.put(error.getField(), error.getCode());
+		}
+		
+		if (validationInfo.size() == 0) {
+			us.updateUser(user);
+		}
+		
+		return new ResponseEntity<>(validationInfo, HttpStatus.OK);
 	}
 	
 	/**

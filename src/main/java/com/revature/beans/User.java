@@ -88,16 +88,12 @@ public class User implements Serializable {
 	@NotBlank
 	@Column(name = "h_state")
 	private String hState;
-	@NotBlank
 	@Column(name = "w_address")
 	private String wAddress;
-	@NotBlank
 	@Column(name = "w_city")
 	private String wCity;
-	@NotBlank
 	@Column(name = "w_zip")
 	private String wZip;
-	@NotBlank
 	@Column(name = "w_state")
 	private String wState;
 	
