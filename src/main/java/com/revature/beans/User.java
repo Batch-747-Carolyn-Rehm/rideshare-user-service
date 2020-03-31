@@ -9,7 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -96,6 +98,27 @@ public class User implements Serializable {
 	private String wZip;
 	@Column(name = "w_state")
 	private String wState;
+
+	
+	/*
+	 * REFACTORED 03/30/2020
+	 * --------------------------
+	 * */
+	@Transient 
+	@Column(name = "distance_meters")
+	private double distance;
+	
+	@Transient
+	@Column(name = "duration_sec")
+	private double duration; 
+	
+	@OneToOne
+	@JoinColumn(name="car", unique = true)
+	private Car car;
+	
+	/*
+	 * --------------------------
+	 * */
 	
 	public User() {
 		super();
@@ -175,6 +198,7 @@ public class User implements Serializable {
 		this.wZip = wZip;
 		this.wState = wState;
 	}
+	
 	public User(int userId, @NotBlank String userName, Batch batch, @NotBlank String firstName,
 			@NotBlank String lastName, @Email String email, @NotBlank String phoneNumber, boolean isDriver,
 			boolean isActive, boolean isAcceptingRides, String hAddress, String hCity, String hZip, String hState,
@@ -199,6 +223,74 @@ public class User implements Serializable {
 		this.wZip = wZip;
 		this.wState = wState;
 	}
+	
+	public User(@Valid @NotBlank @Size(min = 3, max = 12) @Pattern(regexp = "^\\w+\\.?\\w+$") String userName,
+			Batch batch,
+			@Valid @NotBlank @Size(max = 30) @Pattern(regexp = "^[a-zA-Z\\u00C0-\\u017F]+[- ]?[a-zA-Z\\u00C0-\\u017F]+$") String firstName,
+			@Valid @NotBlank @Size(max = 30) @Pattern(regexp = "^[a-zA-Z\\u00C0-\\u017F]+[- ]?[a-zA-Z\\u00C0-\\u017F]+$") String lastName,
+			@NotBlank @Email @Pattern(regexp = "^\\w+\\.?\\w+@\\w+\\.[a-zA-Z]{2,4}$") String email,
+			@NotBlank @Pattern(regexp = "^\\(?([0-9]{3})\\)?[-.\\s]?([0-9]{3})[-.\\s]?([0-9]{4})$") String phoneNumber,
+			boolean isDriver, boolean isActive, boolean isAcceptingRides, @NotBlank String hAddress,
+			@NotBlank String hCity, @NotBlank String hZip, @NotBlank String hState, @NotBlank String wAddress,
+			@NotBlank String wCity, @NotBlank String wZip, @NotBlank String wState, double distance, double duration,
+			Car car) {
+		super();
+		this.userName = userName;
+		this.batch = batch;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.phoneNumber = phoneNumber;
+		this.isDriver = isDriver;
+		this.isActive = isActive;
+		this.isAcceptingRides = isAcceptingRides;
+		this.hAddress = hAddress;
+		this.hCity = hCity;
+		this.hZip = hZip;
+		this.hState = hState;
+		this.wAddress = wAddress;
+		this.wCity = wCity;
+		this.wZip = wZip;
+		this.wState = wState;
+		this.distance = distance;
+		this.duration = duration;
+		this.car = car;
+	}
+	
+
+	public User(int userId,
+			@Valid @NotBlank @Size(min = 3, max = 12) @Pattern(regexp = "^\\w+\\.?\\w+$") String userName, Batch batch,
+			@Valid @NotBlank @Size(max = 30) @Pattern(regexp = "^[a-zA-Z\\u00C0-\\u017F]+[- ]?[a-zA-Z\\u00C0-\\u017F]+$") String firstName,
+			@Valid @NotBlank @Size(max = 30) @Pattern(regexp = "^[a-zA-Z\\u00C0-\\u017F]+[- ]?[a-zA-Z\\u00C0-\\u017F]+$") String lastName,
+			@NotBlank @Email @Pattern(regexp = "^\\w+\\.?\\w+@\\w+\\.[a-zA-Z]{2,4}$") String email,
+			@NotBlank @Pattern(regexp = "^\\(?([0-9]{3})\\)?[-.\\s]?([0-9]{3})[-.\\s]?([0-9]{4})$") String phoneNumber,
+			boolean isDriver, boolean isActive, boolean isAcceptingRides, @NotBlank String hAddress,
+			@NotBlank String hCity, @NotBlank String hZip, @NotBlank String hState, @NotBlank String wAddress,
+			@NotBlank String wCity, @NotBlank String wZip, @NotBlank String wState, double distance, double duration) {
+		super();
+		this.userId = userId;
+		this.userName = userName;
+		this.batch = batch;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.phoneNumber = phoneNumber;
+		this.isDriver = isDriver;
+		this.isActive = isActive;
+		this.isAcceptingRides = isAcceptingRides;
+		this.hAddress = hAddress;
+		this.hCity = hCity;
+		this.hZip = hZip;
+		this.hState = hState;
+		this.wAddress = wAddress;
+		this.wCity = wCity;
+		this.wZip = wZip;
+		this.wState = wState;
+		this.distance = distance;
+		this.duration = duration;
+	}
+
+
 	public int getUserId() {
 		return userId;
 	}
@@ -339,6 +431,43 @@ public class User implements Serializable {
 		this.wState = wState;
 	}
 
+	
+	/*
+	 * REFACTORED 03/30/2020
+	 * --------------------------
+	 * */
+
+	public double getDistance() {
+		return distance;
+	}
+
+
+	public void setDistance(double distance) {
+		this.distance = distance;
+	}
+
+
+	public double getDuration() {
+		return duration;
+	}
+
+
+	public void setDuration(double duration) {
+		this.duration = duration;
+	}
+
+	public Car getCar() {
+		return car;
+	}
+
+
+	public void setCar(Car car) {
+		this.car = car;
+	}
+	/*
+	 * 
+	 * --------------------------
+	 * */
 
 	@Override
 	public int hashCode() {

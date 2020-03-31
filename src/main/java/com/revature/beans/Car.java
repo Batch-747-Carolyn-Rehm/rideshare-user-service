@@ -54,15 +54,13 @@ public class Car implements Serializable {
 	@Column(name="car_year")
 	private int year;
 	
-	@OneToOne
-	@JoinColumn(name="user_id", unique=true)
-	private User user;
+
 	
 	public Car() {
 		super();
 	}
 
-	public Car(int carId, String color, int seats, String make, String model, int year, User user) {
+	public Car(int carId, String color, int seats, String make, String model, int year) {
 		super();
 		this.carId = carId;
 		this.color = color;
@@ -70,7 +68,6 @@ public class Car implements Serializable {
 		this.make = make;
 		this.model = model;
 		this.year = year;
-		this.user = user;
 	}
 
 	public int getCarId() {
@@ -129,13 +126,6 @@ public class Car implements Serializable {
 		this.year = year;
 	}
 
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
 
 	@Override
 	public int hashCode() {
@@ -147,7 +137,6 @@ public class Car implements Serializable {
 		result = prime * result + ((model == null) ? 0 : model.hashCode());
 		result = prime * result + seats;
 		result = prime * result + seatsAvailable;
-		result = prime * result + ((user == null) ? 0 : user.hashCode());
 		result = prime * result + year;
 		return result;
 	}
@@ -182,11 +171,6 @@ public class Car implements Serializable {
 			return false;
 		if (seatsAvailable != other.seatsAvailable)
 			return false;
-		if (user == null) {
-			if (other.user != null)
-				return false;
-		} else if (!user.equals(other.user))
-			return false;
 		if (year != other.year)
 			return false;
 		return true;
@@ -195,7 +179,7 @@ public class Car implements Serializable {
 	@Override
 	public String toString() {
 		return "Car [carId=" + carId + ", color=" + color + ", seats=" + seats + ", seatsAvailable=" + seatsAvailable
-				+ ", make=" + make + ", model=" + model + ", year=" + year + ", user=" + user + "]";
+				+ ", make=" + make + ", model=" + model + ", year=" + year + "]";
 	}
 
 	public boolean validateCar() {
