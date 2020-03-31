@@ -4,17 +4,17 @@ import java.util.List;
 
 public class Filter {
 	private List<String> filterTypes;
-	private String location;
+	private int userId;
 	private int batchId;
 	
 	public Filter() {
 		super();
 	}
 
-	public Filter(List<String> filterTypes, String location, int batchId) {
+	public Filter(List<String> filterTypes, int userId, int batchId) {
 		super();
 		this.filterTypes = filterTypes;
-		this.location = location;
+		this.userId = userId;
 		this.batchId = batchId;
 	}
 
@@ -26,12 +26,12 @@ public class Filter {
 		this.filterTypes = filterTypes;
 	}
 
-	public String getLocation() {
-		return location;
+	public int getUserId() {
+		return userId;
 	}
 
-	public void setLocation(String location) {
-		this.location = location;
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 
 	public int getBatchId() {
@@ -43,17 +43,12 @@ public class Filter {
 	}
 
 	@Override
-	public String toString() {
-		return "Filter [filterTypes=" + filterTypes + ", location=" + location + ", batchId=" + batchId + "]";
-	}
-
-	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + batchId;
 		result = prime * result + ((filterTypes == null) ? 0 : filterTypes.hashCode());
-		result = prime * result + ((location == null) ? 0 : location.hashCode());
+		result = prime * result + userId;
 		return result;
 	}
 
@@ -73,12 +68,14 @@ public class Filter {
 				return false;
 		} else if (!filterTypes.equals(other.filterTypes))
 			return false;
-		if (location == null) {
-			if (other.location != null)
-				return false;
-		} else if (!location.equals(other.location))
+		if (userId != other.userId)
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Filter [filterTypes=" + filterTypes + ", userId=" + userId + ", batchId=" + batchId + "]";
 	}
 	
 }

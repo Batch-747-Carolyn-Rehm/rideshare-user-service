@@ -133,11 +133,11 @@ public class UserController {
 	public ResponseEntity<String> getFilteredDrivers(@RequestBody Filter filters)
 			throws ApiException, InterruptedException, IOException{
 		Set<User> totalDrivers = new HashSet<User>();
-		String[] fullAddress = filters.getLocation().split(", ");
-		String address = fullAddress[0], city = fullAddress[1], zipCode = fullAddress[2];
+		User currentUser = us.getUserById(filters.getUserId());
 		//recommendation filter if no input filters are provided
 		if(filters.getFilterTypes().size() == 0) {
-			totalDrivers = fs.filterByRecommendation(address, filters.getBatchId());
+			String fullAddress = currentUser.gethAddress() + ", " + currentUser.gethCity() + ", " + currentUser.gethState();
+			totalDrivers = fs.filterByRecommendation(fullAddress, filters.getBatchId());
 		} 
 		//add drivers based on filter criteria
 		else {
@@ -149,11 +149,11 @@ public class UserController {
 					break;
 				}
 				case "zipcode":{
-					totalDrivers = fs.filterByZipCode(zipCode, totalDrivers);
+					totalDrivers = fs.filterByZipCode(currentUser.gethZip(), totalDrivers);
 					break;
 				}
 				case "city":{
-					totalDrivers = fs.filterByCity(city, totalDrivers);
+					totalDrivers = fs.filterByCity(currentUser.gethCity(), totalDrivers);
 					break;
 				}
 				}

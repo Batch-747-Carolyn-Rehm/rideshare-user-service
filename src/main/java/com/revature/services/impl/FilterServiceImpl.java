@@ -58,16 +58,21 @@ public class FilterServiceImpl implements FilterService {
 	public Set<User> filterByRecommendation(String address, int batchId) throws ApiException, InterruptedException, IOException {
 		Set<User> drivers = new HashSet<User>();
 		String[] origins = { address };
+		System.out.println(address);
+		System.out.println(batchId);
 		List<String> destinationList = new ArrayList<String>();
 		for (User u : us.getActiveDrivers()) {
 			if (u.isAcceptingRides() && u.getBatch().getBatchNumber() == batchId) {
 				String fullAddress = u.gethAddress() + ", " + u.gethCity() + ", " + u.gethState();
 				destinationList.add(fullAddress);
+				System.out.println(fullAddress);
 			}
 		}
 		String[] destinations = new String[destinationList.size()];
 		destinations = destinationList.toArray(destinations);
+		System.out.println(destinations.length);
 		for(User u : ds.distanceMatrix(origins, destinations)) {
+			System.out.println(u);
 			drivers.add(u);
 		}
 		return drivers;
