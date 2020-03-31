@@ -20,6 +20,13 @@ import com.google.maps.model.Unit;
 import com.revature.beans.User;
 import com.revature.services.DistanceService;
 import com.revature.services.UserService;
+/**
+ * DistanceServiceImpl handles any additional services that need to be made before calling the
+ * repository methods.
+ * 
+ * @author documentation by Faysal Anis
+ *
+ */
 
 @Service
 public class DistanceServiceImpl implements DistanceService {
@@ -27,6 +34,17 @@ public class DistanceServiceImpl implements DistanceService {
 	@Autowired
 	private UserService us;
 
+	/**
+	 * Creates a list of destinations based off of the address, city, and state,
+	 * and creates a list of users available based off that information
+	 * 
+	 * @param origins represents Google API current location of User
+	 * @param destinations represents Google API locations based of distance
+	 * @return A list of all sorted Users
+	 * @exception IOException On input error.
+	 * @exception ApiException on incorrect Google Maps integration
+	 * @exception InterruptedException when the thread is interrupted
+	 */
 	@Override
 	public List<User> distanceMatrix(String[] origins, String[] destinations) throws ApiException, InterruptedException, IOException {
 		
@@ -142,6 +160,11 @@ public class DistanceServiceImpl implements DistanceService {
 
 	}
 	
+	/**
+	 * Gets the Google Map Key to present onto the API map
+	 * 
+	 * @return null is returned after completion
+	 */
 	public String getGoogleMAPKey() {
         Map<String, String> env = System.getenv();
         for (Map.Entry <String, String> entry: env.entrySet()) {
