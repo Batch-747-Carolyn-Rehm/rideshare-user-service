@@ -1,6 +1,7 @@
 package com.revature.services.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -71,9 +72,8 @@ public class CarServiceImplTest {
 		
 		Car expected = new Car(1, "red", 4, "Honda", "Accord", 2015, new User());
 		when(cr.save(expected)).thenReturn(expected);
-		Car actual = csi.updateCar(expected);
 		
-		assertEquals(actual, expected);
+		assertTrue(csi.updateCar(expected));
 	}
 	
 	@Test

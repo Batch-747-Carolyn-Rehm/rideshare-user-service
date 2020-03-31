@@ -56,7 +56,7 @@ public class UserControllerTest {
 	public void testGettingUserById() throws Exception {
 		
 		User user = new User(1, "userName", new Batch(), "adonis", "cabreja", "adonis@gmail.com", "123-456-789");
-		user.setDriver(true);
+		user.setIsDriver(true);
 		user.setActive(true);
 		user.setAcceptingRides(true);
 		when(us.getUserById(1)).thenReturn(user);
@@ -83,7 +83,7 @@ public class UserControllerTest {
 		
 		List<User> users = new ArrayList<>();
 		User user = new User(1, "userName", new Batch(), "adonis", "cabreja", "adonis@gmail.com", "123-456-789");
-		user.setDriver(true);
+		user.setIsDriver(true);
 		user.setActive(true);
 		user.setAcceptingRides(true);
 		users.add(user);
@@ -99,7 +99,7 @@ public class UserControllerTest {
 		
 		List<User> users = new ArrayList<>();
 		User user = new User(1, "userName", new Batch(), "adonis", "cabreja", "adonis@gmail.com", "123-456-789");
-		user.setDriver(true);
+		user.setIsDriver(true);
 		user.setActive(true);
 		user.setAcceptingRides(true);
 		users.add(user);
@@ -115,7 +115,7 @@ public class UserControllerTest {
 		
 		Batch batch = new Batch(111, "address");
 		User user = new User(1, "userName", batch, "adonis", "cabreja", "adonis@gmail.com", "123-456-789");
-		user.setDriver(true);
+		user.setIsDriver(true);
 		user.setActive(true);
 		user.setAcceptingRides(true);
 		

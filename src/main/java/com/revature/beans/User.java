@@ -238,10 +238,10 @@ public class User implements Serializable {
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
-	public boolean isDriver() {
+	public boolean getIsDriver() {
 		return isDriver;
 	}
-	public void setDriver(boolean isDriver) {
+	public void setIsDriver(boolean isDriver) {
 		this.isDriver = isDriver;
 	}
 	public boolean isActive() {

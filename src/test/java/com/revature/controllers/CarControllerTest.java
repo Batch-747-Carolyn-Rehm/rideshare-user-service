@@ -89,7 +89,7 @@ public class CarControllerTest {
 	public void testUpdatingCar() throws Exception {
 		
 		Car car = new Car(1, "red", 4, "Honda", "Accord", 2015, new User());
-		when(cs.updateCar(new Car(1, "red", 4, "Honda", "Accord", 2015, new User()))).thenReturn(car);
+		when(cs.updateCar(new Car(1, "red", 4, "Honda", "Accord", 2015, new User()))).thenReturn(true);
 		
 		mvc.perform(put("/cars/{id}", 1).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsString(car)))
 		   .andExpect(status().isOk())

@@ -41,6 +41,9 @@ public class Car implements Serializable {
 	@Positive
 	private int seats;
 	
+	@Column(name="seats_available")
+	private int seatsAvailable;
+	
 	@NotBlank
 	private String make;
 	
@@ -93,6 +96,14 @@ public class Car implements Serializable {
 	public void setSeats(int seats) {
 		this.seats = seats;
 	}
+	
+	public int getSeatsAvailable() {
+		return seatsAvailable;
+	}
+
+	public void setSeatsAvailable(int seatsAvailable) {
+		this.seatsAvailable = seatsAvailable;
+	}
 
 	public String getMake() {
 		return make;
@@ -135,6 +146,7 @@ public class Car implements Serializable {
 		result = prime * result + ((make == null) ? 0 : make.hashCode());
 		result = prime * result + ((model == null) ? 0 : model.hashCode());
 		result = prime * result + seats;
+		result = prime * result + seatsAvailable;
 		result = prime * result + ((user == null) ? 0 : user.hashCode());
 		result = prime * result + year;
 		return result;
@@ -154,37 +166,54 @@ public class Car implements Serializable {
 		if (color == null) {
 			if (other.color != null)
 				return false;
-		} 
-		else if (!color.equals(other.color))
+		} else if (!color.equals(other.color))
 			return false;
 		if (make == null) {
 			if (other.make != null)
 				return false;
-		} 
-		else if (!make.equals(other.make))
+		} else if (!make.equals(other.make))
 			return false;
 		if (model == null) {
 			if (other.model != null)
 				return false;
-		} 
-		else if (!model.equals(other.model))
+		} else if (!model.equals(other.model))
 			return false;
 		if (seats != other.seats)
+			return false;
+		if (seatsAvailable != other.seatsAvailable)
 			return false;
 		if (user == null) {
 			if (other.user != null)
 				return false;
-		} 
-		else if (!user.equals(other.user))
+		} else if (!user.equals(other.user))
 			return false;
-		return year == other.year;
+		if (year != other.year)
+			return false;
+		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "Car [carId=" + carId + ", color=" + color + ", seats=" + seats + ", make=" + make + ", model=" + model
-				+ ", year=" + year + ", user=" + user + "]";
+		return "Car [carId=" + carId + ", color=" + color + ", seats=" + seats + ", seatsAvailable=" + seatsAvailable
+				+ ", make=" + make + ", model=" + model + ", year=" + year + ", user=" + user + "]";
 	}
+
+	public boolean validateCar() {
+		return validateMakeModelYearSeats() && validateAvailableSeats();
+	}
+
+	private boolean validateAvailableSeats() {
+		// make sure available seats isn't more than seats or negative
+		return seatsAvailable <= seats && seatsAvailable >= 0;
+	}
+
+	private boolean validateMakeModelYearSeats() {
+		// TODO should actually attempt to verify this car exists and the number of
+		// seats is correct
+		// for now, let's just make sure the number of seats isn't 0 or negative.
+		return seats > 0;
+	}
+	
 	
 }
 
