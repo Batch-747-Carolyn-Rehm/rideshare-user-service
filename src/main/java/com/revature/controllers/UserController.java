@@ -160,9 +160,8 @@ public class UserController {
 	 * HTTP POST method (/users)
 	 * 
 	 * @param user represents the new User object being sent.
-	 * @return The newly created object with a 201 code.
+	 * @return The validation information with an OK status.
 	 * 
-	 * Sends custom error messages when incorrect input is used
 	 */
 	
 	@ApiOperation(value="Adds a new user", tags= {"User"})
@@ -173,8 +172,10 @@ public class UserController {
 			validationInfo.put(error.getField(), error.getCode());
 		}
 		
-		user.setBatch(bs.getBatchByNumber(user.getBatch().getBatchNumber()));
-		us.addUser(user);
+		if (validationInfo.size() == 0) {
+			user.setBatch(bs.getBatchByNumber(user.getBatch().getBatchNumber()));
+			us.addUser(user);
+		}
 		 		
 		return new ResponseEntity<>(validationInfo, HttpStatus.OK);
 	}
@@ -183,7 +184,7 @@ public class UserController {
 	 * HTTP PUT method (/users)
 	 * 
 	 * @param user represents the updated User object being sent.
-	 * @return The newly updated object.
+	 * @return The validation information with an OK status.
 	 */
 	
 	@ApiOperation(value="Updates user by id", tags= {"User"})
@@ -194,7 +195,10 @@ public class UserController {
 			validationInfo.put(error.getField(), error.getCode());
 		}
 		
-		us.updateUser(user);
+		if (validationInfo.size() == 0) {
+			us.updateUser(user);
+		}
+		
 		return new ResponseEntity<>(validationInfo, HttpStatus.OK);
 	}
 	
