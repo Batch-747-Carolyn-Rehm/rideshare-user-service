@@ -11,6 +11,7 @@ import java.util.Set;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -130,36 +131,20 @@ public class UserController {
 	
 	@ApiOperation(value="Returns drivers by filter",tags= {"User"})
 	@PostMapping("/filter")
-	public ResponseEntity<String> getFilteredDrivers(@RequestBody Filter filters)
-			throws ApiException, InterruptedException, IOException{
-		Set<User> totalDrivers = new HashSet<User>();
-		User currentUser = us.getUserById(filters.getUserId());
-		//recommendation filter if no input filters are provided
-		if(filters.getFilterTypes().size() == 0) {
-			String fullAddress = currentUser.gethAddress() + ", " + currentUser.gethCity() + ", " + currentUser.gethState();
-			totalDrivers = fs.filterByRecommendation(fullAddress, filters.getBatchId());
-		} 
-		//add drivers based on filter criteria
-		else {
-			for(String filter : filters.getFilterTypes()) {
-				//drivers are calculated based on their home address (current location)
-				switch(filter) {
-				case "batch":{
-					totalDrivers = fs.filterByBatch(filters.getBatchId(), totalDrivers);
-					break;
-				}
-				case "zipcode":{
-					totalDrivers = fs.filterByZipCode(currentUser.gethZip(), totalDrivers);
-					break;
-				}
-				case "city":{
-					totalDrivers = fs.filterByCity(currentUser.gethCity(), totalDrivers);
-					break;
-				}
-				}
-			}
+	public ResponseEntity<List<User>> getFilteredDrivers(
+			@RequestBody Filter filters,
+			@RequestParam(name="sortBy", required=false, defaultValue="userId") String sortBy, 
+			@RequestParam(name="sortDirection", required=false, defaultValue="asc") String sortDirection
+			)
+	{
+
+		List<User> drivers = us.getFilterSortedDriver(filters, sortBy, sortDirection);
+		
+		if(drivers.size() > 0) {
+			return new ResponseEntity(drivers, new HttpHeaders(), HttpStatus.OK);
+		} else {
+			return new ResponseEntity(drivers, new HttpHeaders(), HttpStatus.NOT_FOUND);
 		}
-		return ResponseEntity.ok().body("{ \"Drivers\": " + mapper.writeValueAsString(totalDrivers)+"}");
 	}
 	
 	

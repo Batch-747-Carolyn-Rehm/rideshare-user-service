@@ -1,7 +1,10 @@
 package com.revature.services;
 
+import java.io.IOException;
 import java.util.List;
 
+import com.google.maps.errors.ApiException;
+import com.revature.beans.Filter;
 import com.revature.beans.User;
 
 public interface UserService {
@@ -15,4 +18,5 @@ public interface UserService {
 	public User updateUser(User user);
 	public String deleteUserById(int id);
 	public List<User> getActiveDrivers();
+	public List<User> getFilterSortedDriver(Filter filters, String sortBy, String sortDirection);
 }
