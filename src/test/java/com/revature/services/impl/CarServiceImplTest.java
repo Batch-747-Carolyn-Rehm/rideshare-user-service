@@ -72,7 +72,6 @@ public class CarServiceImplTest {
 		
 		Car expected = new Car(1, "red", 4, "Honda", "Accord", 2015, new User());
 		when(cr.save(expected)).thenReturn(expected);
-//		Car actual = csi.updateCar(expected);
 		
 		assertTrue(csi.updateCar(expected));
 	}

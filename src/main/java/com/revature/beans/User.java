@@ -238,7 +238,7 @@ public class User implements Serializable {
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
-	public boolean isIsDriver() {
+	public boolean getIsDriver() {
 		return isDriver;
 	}
 	public void setIsDriver(boolean isDriver) {
