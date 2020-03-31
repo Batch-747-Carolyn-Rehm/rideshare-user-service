@@ -20,7 +20,7 @@ insert into users values
 (12, 'wmatissoffb@facebook.com', 'Wynne', '4 Goodland Point', 'Oklahoma City', 'OK', '73167', false, false, true, 'Matissoff', '405-888-7795', 'wmatissoffb', '1 Lakeland Way', 'Shawnee Mission', 'KS', '66215', 1),
 (13, 'jlawfulc@simplemachines.org', 'Jozef', '31 Tomscot Hill', 'Spokane', 'WA', '99220', false, true, true, 'Lawful', '509-805-2290', 'jlawfulc', '492 Quincy Road', 'Houston', 'TX', '77035', 1),
 (14, 'flancashired@slideshare.net', 'Faythe', '2626 Babcock Road', 'San Antonio', 'TX', '78229', true, true, true, 'Lancashire', '216-591-6593', 'flancashired', '1008 Pleasure Terrace', 'San Diego', 'CA', '92176', 1),
-(15, 'llynnitte@creativecommons.org', 'Lorita', '0889 Randy Way', 'Charlotte', 'NC', '28235', true, false, true, 'Lynnitt', '704-705-3599', 'llynnitte', '05579 Clarendon Avenue', 'Los Angeles', 'CA', '90015', 1),
+(15, 'llynnitte@creativecommons.org', 'Lorita', '0889 Randy Way', 'Charlotte', 'NC', '28235', true, true, true, 'Lynnitt', '704-705-3599', 'llynnitte', '05579 Clarendon Avenue', 'Los Angeles', 'CA', '90015', 1),
 (16, 'modooghainef@reference.com', 'Marcellina', '300 Jenna Place', 'Boise', 'ID', '83757', true, true, false, 'O''Dooghaine', '208-387-2634', 'modooghainef', '27040 Carioca Crossing', 'Detroit', 'MI', '48242', 1),
 (17, 'jsellwoodg@wisc.edu', 'Jaine', '434 Pierstorff Hill', 'Wilmington', 'DE', '19892', false, true, false, 'Sellwood', '302-836-7801', 'jsellwoodg', '39 Merry Hill', 'Gadsden', 'AL', '35905', 1),
 (18, 'wviani@homestead.com', 'Wain', '4 Sommers Way', 'Charlotte', 'NC', '28210', false, false, true, 'Vian', '704-338-2790', 'wviani', '99 Delaware Hill', 'Athens', 'GA', '30605', 1),
