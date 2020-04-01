@@ -40,7 +40,7 @@ public class CarServiceImplTest {
 	@Test
 	public void testGettingCarById() {
 		
-		Car expected = new Car(1, "red", 4, "Honda", "Accord", 2015, new User());
+		Car expected = new Car(1, "red", 4, "Honda", "Accord", 2015);
 		when(cr.getOne(1)).thenReturn(expected);
 		Car actual = csi.getCarById(1);
 		
@@ -50,7 +50,7 @@ public class CarServiceImplTest {
 	@Test
 	public void testGettingCarByUserId() {
 		
-		Car expected = new Car(1, "red", 4, "Honda", "Accord", 2015, new User());
+		Car expected = new Car(1, "red", 4, "Honda", "Accord", 2015);
 		when(cr.getCarByUserId(1)).thenReturn(expected);
 		Car actual = csi.getCarByUserId(1);
 		
@@ -60,7 +60,7 @@ public class CarServiceImplTest {
 	@Test
 	public void testAddingCar() {
 		
-		Car expected = new Car(1, "red", 4, "Honda", "Accord", 2015, new User());
+		Car expected = new Car(1, "red", 4, "Honda", "Accord", 2015);
 		when(cr.save(expected)).thenReturn(expected);
 		Car actual = csi.addCar(expected);
 		
@@ -70,7 +70,7 @@ public class CarServiceImplTest {
 	@Test
 	public void testUpdatingCar() {
 		
-		Car expected = new Car(1, "red", 4, "Honda", "Accord", 2015, new User());
+		Car expected = new Car(1, "red", 4, "Honda", "Accord", 2015);
 		when(cr.save(expected)).thenReturn(expected);
 		
 		assertTrue(csi.updateCar(expected));
