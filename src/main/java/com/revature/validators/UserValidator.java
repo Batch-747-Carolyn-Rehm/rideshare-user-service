@@ -21,8 +21,12 @@ public class UserValidator implements Validator {
 		User user = (User) target;
 		
 		String address = "";
-		String[] splittedHAddress = user.gethAddress().split(" ");
-		String joinedHAddress = String.join("+", splittedHAddress);
+		String joinedHAddress = "";
+		if (user.gethAddress() != null) {
+			String[] splittedHAddress = user.gethAddress().split(" ");
+			joinedHAddress = String.join("+", splittedHAddress);
+		}
+		
 		if (user.getwAddress() != null) {
 			String[] splittedWAddress = user.getwAddress().split(" ");
 			String joinedWAddress = String.join("+", splittedWAddress);
