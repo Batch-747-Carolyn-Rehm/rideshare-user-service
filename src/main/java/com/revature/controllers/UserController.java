@@ -195,9 +195,8 @@ public class UserController {
 	@ApiOperation(value="Updates user by id", tags= {"User"})
 	@PutMapping
 	public ResponseEntity<Map> updateUser(@Valid @RequestBody User user, BindingResult result) {
-		//validating address using custom validator
+		
 		uv.validate(user, result);
-		System.out.println("validation result is " + result);
 		
 		Map<String, String> validationInfo = new HashMap<>();
 		for (FieldError error: result.getFieldErrors()) {
