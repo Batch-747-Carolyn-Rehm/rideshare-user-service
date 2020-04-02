@@ -122,7 +122,12 @@ public class UserController {
 		
 	}
 	
-	//Get Drivers by different filters
+	/**
+	 * HTTP POST method (/users/filter)
+	 * 
+	 * @param filter object represents the filter criteria
+	 * @return response entity with the total drivers that match the filter criteria
+	 * */
 	
 	@ApiOperation(value="Returns drivers by filter",tags= {"User"})
 	@PostMapping("/filter")
@@ -130,15 +135,21 @@ public class UserController {
 			throws ApiException, InterruptedException, IOException{
 		Set<User> totalDrivers = new HashSet<User>();
 		User currentUser = us.getUserById(filters.getUserId());
-		//recommendation filter if no input filters are provided
+		/**
+		 * Recommendation filter if no input filters are provided
+		 * */
 		if(filters.getFilterTypes().size() == 0) {
 			String fullAddress = currentUser.gethAddress() + ", " + currentUser.gethCity() + ", " + currentUser.gethState();
 			totalDrivers = fs.filterByRecommendation(fullAddress, filters.getBatchId());
 		} 
-		//add drivers based on filter criteria
+		/**
+		 * add drivers based on filter criteria
+		 * */
 		else {
 			for(String filter : filters.getFilterTypes()) {
-				//drivers are calculated based on their home address (current location)
+				/**
+				 * drivers are calculated based on their home address (current location)
+				 * */
 				switch(filter) {
 				case "batch":{
 					totalDrivers = fs.filterByBatch(filters.getBatchId(), totalDrivers);

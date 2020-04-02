@@ -2,6 +2,12 @@ package com.revature.beans;
 
 import java.util.List;
 
+/**
+ * Used for filtering the driver list results
+ * 
+ * @author Matthias Quintero & Michael Tsang
+ * */
+
 public class Filter {
 	private List<String> filterTypes;
 	private int userId;

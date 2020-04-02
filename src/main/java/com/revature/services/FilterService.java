@@ -7,6 +7,12 @@ import java.util.Set;
 import com.google.maps.errors.ApiException;
 import com.revature.beans.User;
 
+/**
+ * Defines the behavior of the Filter Service
+ * 
+ * @author Matthias Quintero & Michael Tsang
+ * */
+
 public interface FilterService {
 	Set<User> filterByBatch(int batchId, Set<User> totalDrivers);
 	Set<User> filterByZipCode(String zip, Set<User> totalDrivers);
