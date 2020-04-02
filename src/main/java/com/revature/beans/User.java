@@ -214,39 +214,6 @@ public class User implements Serializable {
 		this.wState = wState;
 	}
 	
-	public User(@Valid @NotBlank @Size(min = 3, max = 12) @Pattern(regexp = "^\\w+\\.?\\w+$") String userName,
-			Batch batch,
-			@Valid @NotBlank @Size(max = 30) @Pattern(regexp = "^[a-zA-Z\\u00C0-\\u017F]+[- ]?[a-zA-Z\\u00C0-\\u017F]+$") String firstName,
-			@Valid @NotBlank @Size(max = 30) @Pattern(regexp = "^[a-zA-Z\\u00C0-\\u017F]+[- ]?[a-zA-Z\\u00C0-\\u017F]+$") String lastName,
-			@NotBlank @Email @Pattern(regexp = "^\\w+\\.?\\w+@\\w+\\.[a-zA-Z]{2,4}$") String email,
-			@NotBlank @Pattern(regexp = "^\\(?([0-9]{3})\\)?[-.\\s]?([0-9]{3})[-.\\s]?([0-9]{4})$") String phoneNumber,
-			boolean isDriver, boolean isActive, boolean isAcceptingRides, @NotBlank String hAddress,
-			@NotBlank String hCity, @NotBlank String hZip, @NotBlank String hState, @NotBlank String wAddress,
-			@NotBlank String wCity, @NotBlank String wZip, @NotBlank String wState, double distance, double duration,
-			Car car) {
-		super();
-		this.userName = userName;
-		this.batch = batch;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.email = email;
-		this.phoneNumber = phoneNumber;
-		this.isDriver = isDriver;
-		this.isActive = isActive;
-		this.isAcceptingRides = isAcceptingRides;
-		this.hAddress = hAddress;
-		this.hCity = hCity;
-		this.hZip = hZip;
-		this.hState = hState;
-		this.wAddress = wAddress;
-		this.wCity = wCity;
-		this.wZip = wZip;
-		this.wState = wState;
-		this.distance = distance;
-		this.duration = duration;
-		this.car = car;
-	}
-	
 
 	public User(int userId,
 			@Valid @NotBlank @Size(min = 3, max = 12) @Pattern(regexp = "^\\w+\\.?\\w+$") String userName, Batch batch,
