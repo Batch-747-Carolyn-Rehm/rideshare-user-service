@@ -24,8 +24,6 @@ public interface CarRepository extends JpaRepository<Car, Integer> {
 	 * @return Check {@link com.revature.services.impl.UserServiceImpl}
 	 */
 	
-	//@Query("select c from Car c where c.user.userId = ?1")
-	
 	
 	/**
 	 * Custom query that uses the @Query annotation to select a car by 
