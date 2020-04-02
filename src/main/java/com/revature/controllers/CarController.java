@@ -116,7 +116,7 @@ public class CarController {
 	 */
 	
 	@ApiOperation(value="Updates car by id", tags= {"Car"})
-	@PutMapping("/{id}")
+	@PutMapping
 	public ResponseEntity<Map> updateCar(@Valid @RequestBody Car car, BindingResult result) {
 		Map<String, String> validationInfo = new HashMap<>();
 		for (FieldError error: result.getFieldErrors()) {
