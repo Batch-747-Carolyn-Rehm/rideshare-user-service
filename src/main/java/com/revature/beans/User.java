@@ -2,6 +2,7 @@ package com.revature.beans;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -105,7 +106,7 @@ public class User implements Serializable {
 	@Transient
 	private double duration; 
 	
-	@OneToOne
+	@OneToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="car", unique = true)
 	private Car car;
 	

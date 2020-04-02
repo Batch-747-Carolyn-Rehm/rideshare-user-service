@@ -25,20 +25,15 @@ public class UserValidator implements Validator {
 		if (user.gethAddress() != null) {
 			String[] splittedHAddress = user.gethAddress().split(" ");
 			joinedHAddress = String.join("+", splittedHAddress);
-		}
-		
-		if (user.getwAddress() != null) {
-			String[] splittedWAddress = user.getwAddress().split(" ");
-			String joinedWAddress = String.join("+", splittedWAddress);
-			address = joinedHAddress + "+" + joinedWAddress + "+" + user.gethCity() + "+" + user.gethState() + "+" + user.gethZip();
+			address = joinedHAddress + ",+" + user.gethCity() + "+" + user.gethState() + "+" + user.gethZip();
 		} else {
-			address = joinedHAddress + "+" + user.gethCity() + "+" + user.gethState() + "+" + user.gethZip();
+			address = user.gethCity() + "+" + user.gethState() + "+" + user.gethZip();
 		}
 		
 		String apiKey = System.getenv("googleMapAPIKey");
 		
 		RestTemplate restTemplate = new RestTemplate();
-		String url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "&key=" + apiKey;
+		String url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "&components=postal_code:" + user.gethZip() + "&key=" + apiKey;
 		GeoCodingReponse gr = restTemplate.getForObject(url, GeoCodingReponse.class);
 		
 		if (gr.getResults().size() == 0 || gr.getResults().size() > 1 || gr.getResults().size() == 1 && gr.getResults().get(0).isPartialMatch() == true) {
