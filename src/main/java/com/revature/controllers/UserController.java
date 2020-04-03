@@ -82,8 +82,8 @@ public class UserController {
 			@RequestBody Filter filters,
 			@RequestParam(name="sortBy", required=false, defaultValue="userId") String sortBy, 
 			@RequestParam(name="sortDirection", required=false, defaultValue="asc") String sortDirection,
-			@RequestParam(name="pageNo",defaultValue="1")Integer pageNo,
-			@RequestParam(name="pageSize",defaultValue="10")Integer pageSize
+			@RequestParam(defaultValue="0")Integer pageNo,
+			@RequestParam(defaultValue="5")Integer pageSize
 			)
 	{
 
