@@ -45,7 +45,7 @@ public class UserServiceImplTest {
 		when(ur.findById(1)).thenReturn(expected);
 		User actual = usi.getUserById(1);
 		
-		assertEquals(expected, actual);
+		assertEquals(user, actual);
 	}
 	
 	@Test

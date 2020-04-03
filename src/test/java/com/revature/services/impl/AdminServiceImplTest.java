@@ -45,7 +45,7 @@ public class AdminServiceImplTest {
 		when(ar.findById(1)).thenReturn(expected);
 		Admin actual = asi.getAdminById(1);
 		
-		assertEquals(expected, actual);
+		assertEquals(admin, actual);
 	}
 	
 	@Test

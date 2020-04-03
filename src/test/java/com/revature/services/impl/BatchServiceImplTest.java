@@ -45,7 +45,7 @@ public class BatchServiceImplTest {
 		when(br.findById(123)).thenReturn(expected);
 		Batch actual = bsi.getBatchByNumber(123);
 		
-		assertEquals(expected, actual);
+		assertEquals(batch, actual);
 	}
 	
 	@Test

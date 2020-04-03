@@ -47,7 +47,7 @@ public class CarServiceImplTest {
 		when(cr.findById(1)).thenReturn(expected);
 		Car actual = csi.getCarById(1);
 		
-		assertEquals(actual, expected);
+		assertEquals(actual, car);
 	}
 	
 	@Test
