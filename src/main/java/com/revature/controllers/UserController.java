@@ -139,9 +139,8 @@ public class UserController {
 	 * HTTP POST method (/users)
 	 * 
 	 * @param user represents the new User object being sent.
-	 * @return The newly created object with a 201 code.
+	 * @return The validation information with an OK status.
 	 * 
-	 * Sends custom error messages when incorrect input is used
 	 */
 	
 	@ApiOperation(value="Adds a new user", tags= {"User"})
@@ -168,15 +167,14 @@ public class UserController {
 	 * HTTP PUT method (/users)
 	 * 
 	 * @param user represents the updated User object being sent.
-	 * @return The newly updated object.
+	 * @return The validation information with an OK status.
 	 */
 	
 	@ApiOperation(value="Updates user by id", tags= {"User"})
 	@PutMapping
 	public ResponseEntity<Map> updateUser(@Valid @RequestBody User user, BindingResult result) {
-		//validating address using custom validator
+		
 		uv.validate(user, result);
-		System.out.println("validation result is " + result);
 		
 		Map<String, String> validationInfo = new HashMap<>();
 		for (FieldError error: result.getFieldErrors()) {
