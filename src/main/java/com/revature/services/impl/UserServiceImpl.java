@@ -1,12 +1,25 @@
 package com.revature.services.impl;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.google.maps.errors.ApiException;
+import com.revature.beans.DriverDistanceCache;
+import com.revature.beans.Filter;
 import com.revature.beans.User;
 import com.revature.repositories.UserRepository;
+import com.revature.services.DistanceService;
+import com.revature.services.FilterService;
 import com.revature.services.UserService;
+import com.revature.utils.UserComparator;
 
 /**
  * UserServiceImpl handles any additional services that need to be made before calling the
@@ -21,6 +34,15 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private UserRepository ur;
+	
+	@Autowired
+	private DistanceService ds;
+	
+	@Autowired
+	private DriverDistanceCache dc;
+	
+	@Autowired
+	private FilterService fs;
 	
 	@Override
 	public List<User> getActiveDrivers() {
@@ -123,6 +145,73 @@ public class UserServiceImpl implements UserService {
 	public String deleteUserById(int id) {
 		ur.deleteById(id);
 		return "User with id: " + id + " was deleted.";
+	}
+
+	@Override
+	public List<User> getFilterSortedDriver(Filter filters, String sortBy, String sortDirection) {
+		
+		// Get reference to the Driver Cache
+		Map<Integer, List<User>> distanceCache = dc.getDriverDistanceCache();
+		
+		Set<User> totalDrivers = null;
+		User currentUser = getUserById(filters.getUserId());
+		
+		if (distanceCache.containsKey(currentUser.getUserId())) {
+			// Set totalDrivers to list from cache
+			totalDrivers = new HashSet<User>(distanceCache.get(currentUser.getUserId()));
+		} else {
+			// Pull from DB, run through getDistance, add to cache
+			List<User> allDrivers = getActiveDrivers();
+			
+			try {
+				ds.getDistances(currentUser, allDrivers);
+			} catch (ApiException | InterruptedException | IOException e) {
+				e.printStackTrace();
+			}
+			
+			allDrivers.remove(currentUser);
+			
+			distanceCache.put(currentUser.getUserId(), allDrivers);
+			dc.setDriverDistanceCache(distanceCache);
+			
+			totalDrivers = new HashSet<>(allDrivers);
+		}
+
+		
+		//recommendation filter if no input filters are provided
+		if(filters.getFilterTypes().size() == 0) {
+			String fullAddress = currentUser.gethAddress() + ", " + currentUser.gethCity() + ", " + currentUser.gethState();
+			try {
+				totalDrivers = fs.filterByRecommendation(fullAddress, filters.getBatchId(), totalDrivers);
+			} catch (ApiException | InterruptedException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} 
+		//add drivers based on filter criteria
+		else {
+			for(String filter : filters.getFilterTypes()) {
+				//drivers are calculated based on their home address (current location)
+				switch(filter) {
+				case "batch":{
+					totalDrivers = fs.filterByBatch(filters.getBatchId(), totalDrivers);
+					break;
+				}
+				case "zipcode":{
+					totalDrivers = fs.filterByZipCode(currentUser.gethZip(), totalDrivers);
+					break;
+				}
+				case "city":{
+					totalDrivers = fs.filterByCity(currentUser.gethCity(), totalDrivers);
+					break;
+				}
+				}
+			}
+		}
+		
+		return totalDrivers.stream()
+				.sorted(UserComparator.getComparator(sortBy, sortDirection))
+				.collect(Collectors.toList());
 	}
 
 }

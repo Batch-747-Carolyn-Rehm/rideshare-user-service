@@ -11,6 +11,7 @@ import java.util.Set;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -22,14 +23,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.maps.errors.ApiException;
+import com.revature.beans.Filter;
 import com.revature.beans.User;
 import com.revature.services.BatchService;
 import com.revature.services.DistanceService;
+import com.revature.services.FilterService;
 import com.revature.services.UserService;
 import com.revature.validators.UserValidator;
 
@@ -62,60 +67,33 @@ public class UserController {
 	
 	@Autowired
 	private UserValidator uv;
+
+	@Autowired
+	private FilterService fs;
 	
-	/**
-	 * HTTP GET method (/users)
-	 * 
-	 * @param isDriver represents if the user is a driver or rider.
-	 * @param username represents the user's username.
-	 * @param location represents the batch's location.
-	 * @return A list of all the users, users by is-driver, user by username and users by is-driver and location.
-	 */
+	private ObjectMapper mapper = new ObjectMapper();
 	
 	
-	/*@ApiOperation(value="Returns user drivers", tags= {"User"})
-	@GetMapping
-	public List<User> getActiveDrivers() {
-		return us.getActiveDrivers();
-	}*/
+	//Get Drivers by different filters
 	
-	
-	@ApiOperation(value="Returns user drivers", tags= {"User"})
-	@GetMapping("/driver/{address}")
-	public List <User> getTopFiveDrivers(@PathVariable("address")String address) throws ApiException, InterruptedException, IOException {
-		//List<User> aps =  new ArrayList<User>();
-		System.out.println(address);
-		List<String> destinationList = new ArrayList<String>();
-		String [] origins = {address};
-//		
-	    Map<String, User> topfive = new HashMap<String, User>();
-//		
-		for(User d : us.getActiveDrivers()) {
-//			
-			String add = d.gethAddress();
-			String city = d.gethCity();
-			String state = d.gethState();
-			
-			String fullAdd = add + ", " + city + ", " + state;
-			
-			destinationList.add(fullAdd);
-//			
-			topfive.put(fullAdd, d);
-//						
-	}
-//		
-//		System.out.println(destinationList);
-//		
-		String [] destinations = new String[destinationList.size()];
-////		
-	destinations = destinationList.toArray(destinations);
-//		
-	return	ds.distanceMatrix(origins, destinations);
-//		
-//		
-		//return ds.distanceMatrix();	
+	@ApiOperation(value="Returns drivers by filter",tags= {"User"})
+	@PostMapping("/filter")
+	public ResponseEntity<List<User>> getFilteredDrivers(
+			@RequestBody Filter filters,
+			@RequestParam(name="sortBy", required=false, defaultValue="userId") String sortBy, 
+			@RequestParam(name="sortDirection", required=false, defaultValue="asc") String sortDirection
+			)
+	{
+
+		List<User> drivers = us.getFilterSortedDriver(filters, sortBy, sortDirection);
 		
+		if(drivers.size() > 0) {
+			return new ResponseEntity(drivers, new HttpHeaders(), HttpStatus.OK);
+		} else {
+			return new ResponseEntity(drivers, new HttpHeaders(), HttpStatus.NOT_FOUND);
+		}
 	}
+	
 	
 	/**
 	 * HTTP GET method (/users)
