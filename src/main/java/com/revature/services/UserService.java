@@ -18,5 +18,5 @@ public interface UserService {
 	public User updateUser(User user);
 	public String deleteUserById(int id);
 	public List<User> getActiveDrivers();
-	public List<User> getFilterSortedDriver(Filter filters, String sortBy, String sortDirection);
+	public List<User> getFilterSortedDriver(Filter filters, String sortBy, String sortDirection,Integer pageNo, Integer pageSize);
 }

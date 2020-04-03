@@ -81,11 +81,13 @@ public class UserController {
 	public ResponseEntity<List<User>> getFilteredDrivers(
 			@RequestBody Filter filters,
 			@RequestParam(name="sortBy", required=false, defaultValue="userId") String sortBy, 
-			@RequestParam(name="sortDirection", required=false, defaultValue="asc") String sortDirection
+			@RequestParam(name="sortDirection", required=false, defaultValue="asc") String sortDirection,
+			@RequestParam(name="pageNo",defaultValue="1")Integer pageNo,
+			@RequestParam(name="pageSize",defaultValue="10")Integer pageSize
 			)
 	{
 
-		List<User> drivers = us.getFilterSortedDriver(filters, sortBy, sortDirection);
+		List<User> drivers = us.getFilterSortedDriver(filters, sortBy, sortDirection, pageNo, pageSize);
 		
 		if(drivers.size() > 0) {
 			return new ResponseEntity(drivers, new HttpHeaders(), HttpStatus.OK);
@@ -107,8 +109,8 @@ public class UserController {
 	@ApiOperation(value="Returns all users", tags= {"User"}, notes="Can also filter by is-driver, location and username")
 	@GetMapping
 	public List<User> getUsers(@RequestParam(name="is-driver",required=false)Boolean isDriver,
-							   @RequestParam(name="username",required=false)String username,
-							   @RequestParam(name="location", required=false)String location) {
+					@RequestParam(name="username",required=false)String username,
+					@RequestParam(name="location", required=false)String location) {
 		
 		if (isDriver != null && location != null) {
 			return us.getUserByRoleAndLocation(isDriver.booleanValue(), location);

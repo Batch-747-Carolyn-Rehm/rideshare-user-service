@@ -10,6 +10,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.google.maps.errors.ApiException;
 import com.revature.beans.DriverDistanceCache;
@@ -20,6 +23,7 @@ import com.revature.services.DistanceService;
 import com.revature.services.FilterService;
 import com.revature.services.UserService;
 import com.revature.utils.UserComparator;
+
 
 /**
  * UserServiceImpl handles any additional services that need to be made before calling the
@@ -148,11 +152,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<User> getFilterSortedDriver(Filter filters, String sortBy, String sortDirection) {
+	public List<User> getFilterSortedDriver(Filter filters, String sortBy, String sortDirection,
+			Integer pageNo, Integer pageSize) {
 		
 		// Get reference to the Driver Cache
 		Map<Integer, List<User>> distanceCache = dc.getDriverDistanceCache();
 		
+				
 		Set<User> totalDrivers = null;
 		User currentUser = getUserById(filters.getUserId());
 		
@@ -160,8 +166,15 @@ public class UserServiceImpl implements UserService {
 			// Set totalDrivers to list from cache
 			totalDrivers = new HashSet<User>(distanceCache.get(currentUser.getUserId()));
 		} else {
-			// Pull from DB, run through getDistance, add to cache
-			List<User> allDrivers = getActiveDrivers();
+			//make page request from parameters
+			Pageable paging = PageRequest.of(pageNo,pageSize);
+			Page<User> pageResult =  ur.getActiveDrivers(paging);
+			
+			List<User> allDrivers = new ArrayList<User>();
+			
+			if(pageResult.hasContent()) {
+				allDrivers =  pageResult.getContent();
+			}
 			
 			try {
 				ds.getDistances(currentUser, allDrivers);
