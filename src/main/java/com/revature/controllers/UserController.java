@@ -73,59 +73,6 @@ public class UserController {
 	
 	private ObjectMapper mapper = new ObjectMapper();
 	
-	/**
-	 * HTTP GET method (/users)
-	 * 
-	 * @param isDriver represents if the user is a driver or rider.
-	 * @param username represents the user's username.
-	 * @param location represents the batch's location.
-	 * @return A list of all the users, users by is-driver, user by username and users by is-driver and location.
-	 */
-	
-	
-	/*@ApiOperation(value="Returns user drivers", tags= {"User"})
-	@GetMapping
-	public List<User> getActiveDrivers() {
-		return us.getActiveDrivers();
-	}*/
-	
-	
-//	@ApiOperation(value="Returns user drivers", tags= {"User"})
-//	@GetMapping("/driver/{address}")
-//	public List <User> getTopFiveDrivers(@PathVariable("address")String address) throws ApiException, InterruptedException, IOException {
-//		//List<User> aps =  new ArrayList<User>();
-//		System.out.println(address);
-//		List<String> destinationList = new ArrayList<String>();
-//		String [] origins = {address};
-////		
-//	    Map<String, User> topfive = new HashMap<String, User>();
-////		
-//		for(User d : us.getActiveDrivers()) {
-////			
-//			String add = d.gethAddress();
-//			String city = d.gethCity();
-//			String state = d.gethState();
-//			
-//			String fullAdd = add + ", " + city + ", " + state;
-//			
-//			destinationList.add(fullAdd);
-////			
-//			topfive.put(fullAdd, d);
-////						
-//	}
-////		
-////		System.out.println(destinationList);
-////		
-//		String [] destinations = new String[destinationList.size()];
-//////		
-//	destinations = destinationList.toArray(destinations);
-////		
-//	return	ds.distanceMatrix(origins, destinations);
-////		
-////		
-//		//return ds.distanceMatrix();	
-//		
-//	}
 	
 	//Get Drivers by different filters
 	

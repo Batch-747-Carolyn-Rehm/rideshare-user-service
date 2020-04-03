@@ -160,7 +160,7 @@ public class UserServiceImpl implements UserService {
 			// Set totalDrivers to list from cache
 			totalDrivers = new HashSet<User>(distanceCache.get(currentUser.getUserId()));
 		} else {
-			// Pull from DB, run through distanceMatrix, add to cache
+			// Pull from DB, run through getDistance, add to cache
 			List<User> allDrivers = getActiveDrivers();
 			
 			try {
@@ -176,8 +176,7 @@ public class UserServiceImpl implements UserService {
 			
 			totalDrivers = new HashSet<>(allDrivers);
 		}
-		
-		System.out.println(totalDrivers);
+
 		
 		//recommendation filter if no input filters are provided
 		if(filters.getFilterTypes().size() == 0) {

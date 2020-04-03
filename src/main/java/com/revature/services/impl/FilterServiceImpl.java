@@ -56,23 +56,7 @@ public class FilterServiceImpl implements FilterService {
 
 	@Override
 	public Set<User> filterByRecommendation(String address, int batchId, Set<User> totalDrivers) throws ApiException, InterruptedException, IOException {
-//		Set<User> drivers = new HashSet<User>();
-//		String[] origins = { address };
-//		System.out.println(address);
-//		System.out.println(batchId);
-//		List<String> destinationList = new ArrayList<String>();
-//		for (User u : us.getActiveDrivers()) {
-//			if (u.isActive() && u.getBatch().getBatchNumber() == batchId) {
-//				String fullAddress = u.gethAddress() + ", " + u.gethCity() + ", " + u.gethState();
-//				destinationList.add(fullAddress);
-////				System.out.println(fullAddress);
-//			}
-//		}
-//		String[] destinations = new String[destinationList.size()];
-//		destinations = destinationList.toArray(destinations);
-//		System.out.println(destinations.length);
 		for(User u : totalDrivers) {
-//			System.out.println(u);
 			if (!u.isActive() || u.getBatch().getBatchNumber() != batchId) {
 				totalDrivers.remove(u);
 			}
