@@ -26,9 +26,9 @@ public class FilterServiceImpl implements FilterService {
 
 	@Override
 	public Set<User> filterByBatch(int batchId, Set<User> drivers) {
-		for (User u : us.getActiveDrivers()) {
-			if (u.getBatch().getBatchNumber() == batchId && u.isAcceptingRides()) {
-				drivers.add(u);
+		for (User u : drivers) {
+			if (u.getBatch().getBatchNumber() != batchId || !u.isActive()) {
+				drivers.remove(u);
 			}
 		}
 		return drivers;
@@ -36,9 +36,9 @@ public class FilterServiceImpl implements FilterService {
 
 	@Override
 	public Set<User> filterByZipCode(String zip, Set<User> drivers) {
-		for (User u : us.getActiveDrivers()) {
-			if (u.gethZip().equals(zip) && u.isAcceptingRides()) {
-				drivers.add(u);
+		for (User u : drivers) {
+			if (!u.gethZip().equals(zip) || !u.isActive()) {
+				drivers.remove(u);
 			}
 		}
 		return drivers;
@@ -46,36 +46,38 @@ public class FilterServiceImpl implements FilterService {
 
 	@Override
 	public Set<User> filterByCity(String city, Set<User> drivers) {
-		for (User u : us.getActiveDrivers()) {
-			if (u.gethCity().equals(city) && u.isAcceptingRides()) {
-				drivers.add(u);
+		for (User u : drivers) {
+			if (!u.gethCity().equals(city) || !u.isActive()) {
+				drivers.remove(u);
 			}
 		}
 		return drivers;
 	}
 
 	@Override
-	public Set<User> filterByRecommendation(String address, int batchId) throws ApiException, InterruptedException, IOException {
-		Set<User> drivers = new HashSet<User>();
-		String[] origins = { address };
-		System.out.println(address);
-		System.out.println(batchId);
-		List<String> destinationList = new ArrayList<String>();
-		for (User u : us.getActiveDrivers()) {
-			if (u.isAcceptingRides() && u.getBatch().getBatchNumber() == batchId) {
-				String fullAddress = u.gethAddress() + ", " + u.gethCity() + ", " + u.gethState();
-				destinationList.add(fullAddress);
-				System.out.println(fullAddress);
+	public Set<User> filterByRecommendation(String address, int batchId, Set<User> totalDrivers) throws ApiException, InterruptedException, IOException {
+//		Set<User> drivers = new HashSet<User>();
+//		String[] origins = { address };
+//		System.out.println(address);
+//		System.out.println(batchId);
+//		List<String> destinationList = new ArrayList<String>();
+//		for (User u : us.getActiveDrivers()) {
+//			if (u.isActive() && u.getBatch().getBatchNumber() == batchId) {
+//				String fullAddress = u.gethAddress() + ", " + u.gethCity() + ", " + u.gethState();
+//				destinationList.add(fullAddress);
+////				System.out.println(fullAddress);
+//			}
+//		}
+//		String[] destinations = new String[destinationList.size()];
+//		destinations = destinationList.toArray(destinations);
+//		System.out.println(destinations.length);
+		for(User u : totalDrivers) {
+//			System.out.println(u);
+			if (!u.isActive() || u.getBatch().getBatchNumber() != batchId) {
+				totalDrivers.remove(u);
 			}
 		}
-		String[] destinations = new String[destinationList.size()];
-		destinations = destinationList.toArray(destinations);
-		System.out.println(destinations.length);
-		for(User u : ds.distanceMatrix(origins, destinations)) {
-			System.out.println(u);
-			drivers.add(u);
-		}
-		return drivers;
+		return totalDrivers;
 	}
 
 }

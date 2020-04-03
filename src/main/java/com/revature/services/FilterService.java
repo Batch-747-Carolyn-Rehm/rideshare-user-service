@@ -11,5 +11,5 @@ public interface FilterService {
 	Set<User> filterByBatch(int batchId, Set<User> totalDrivers);
 	Set<User> filterByZipCode(String zip, Set<User> totalDrivers);
 	Set<User> filterByCity(String city, Set<User> totalDrivers);
-	Set<User> filterByRecommendation(String address, int batchId) throws ApiException, InterruptedException, IOException;
+	Set<User> filterByRecommendation(String address, int batchId, Set<User> totalDrivers) throws ApiException, InterruptedException, IOException;
 }

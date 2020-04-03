@@ -24,7 +24,7 @@ public class UserComparator implements Comparator<User>, Serializable{
 			comparator = Comparator.comparing(User::getFirstName);
 			break;
 		default:
-			comparator = Comparator.comparing(User::getUserId);
+			comparator = Comparator.comparing(User::getDistance);
 		}
 		
 		if(!isAsc) {

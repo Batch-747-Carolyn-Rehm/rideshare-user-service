@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.google.maps.errors.ApiException;
+import com.revature.beans.DriverDistanceCache;
 import com.revature.beans.Filter;
 import com.revature.beans.User;
 import com.revature.repositories.UserRepository;
@@ -35,6 +37,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private DistanceService ds;
+	
+	@Autowired
+	private DriverDistanceCache dc;
 	
 	@Autowired
 	private FilterService fs;
@@ -145,13 +150,40 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<User> getFilterSortedDriver(Filter filters, String sortBy, String sortDirection) {
 		
-		Set<User> totalDrivers = new HashSet<User>();
+		// Get reference to the Driver Cache
+		Map<Integer, List<User>> distanceCache = dc.getDriverDistanceCache();
+		
+		Set<User> totalDrivers = null;
 		User currentUser = getUserById(filters.getUserId());
+		
+		if (distanceCache.containsKey(currentUser.getUserId())) {
+			// Set totalDrivers to list from cache
+			totalDrivers = new HashSet<User>(distanceCache.get(currentUser.getUserId()));
+		} else {
+			// Pull from DB, run through distanceMatrix, add to cache
+			List<User> allDrivers = getActiveDrivers();
+			
+			try {
+				ds.getDistances(currentUser, allDrivers);
+			} catch (ApiException | InterruptedException | IOException e) {
+				e.printStackTrace();
+			}
+			
+			allDrivers.remove(currentUser);
+			
+			distanceCache.put(currentUser.getUserId(), allDrivers);
+			dc.setDriverDistanceCache(distanceCache);
+			
+			totalDrivers = new HashSet<>(allDrivers);
+		}
+		
+		System.out.println(totalDrivers);
+		
 		//recommendation filter if no input filters are provided
 		if(filters.getFilterTypes().size() == 0) {
 			String fullAddress = currentUser.gethAddress() + ", " + currentUser.gethCity() + ", " + currentUser.gethState();
 			try {
-				totalDrivers = fs.filterByRecommendation(fullAddress, filters.getBatchId());
+				totalDrivers = fs.filterByRecommendation(fullAddress, filters.getBatchId(), totalDrivers);
 			} catch (ApiException | InterruptedException | IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
