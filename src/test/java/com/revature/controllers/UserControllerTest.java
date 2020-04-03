@@ -24,7 +24,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.beans.Batch;
 import com.revature.beans.User;
+import com.revature.services.BatchService;
+import com.revature.services.DistanceService;
 import com.revature.services.UserService;
+import com.revature.validators.UserValidator;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(UserController.class)
@@ -38,6 +41,15 @@ public class UserControllerTest {
 		
 	@MockBean
 	private UserService us;
+	
+	@MockBean
+	private UserValidator uv;
+	
+	@MockBean
+	private BatchService bs;
+	
+	@MockBean
+	private DistanceService ds;
 	
 	@Test
 	public void testGettingUsers() throws Exception {
