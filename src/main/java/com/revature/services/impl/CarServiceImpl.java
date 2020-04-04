@@ -78,8 +78,12 @@ public class CarServiceImpl implements CarService {
 	 */
 	
 	@Override
-	public Car updateCar(Car car) {
-		return cr.save(car);
+	public boolean updateCar(Car car) {
+		if (car.validateCar()) {
+			return cr.save(car) != null;
+		}else {
+			return false;
+		}
 	}
 
 	/**

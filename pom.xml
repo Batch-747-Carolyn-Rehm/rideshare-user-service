@@ -61,8 +61,8 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		
-		<sonar.projectKey>revaturelabs_rideshare-user-service</sonar.projectKey>
-  		<sonar.organization>revaturelabs-screenforce</sonar.organization>
+		<sonar.projectKey>Batch-747-Carolyn-Rehm_rideshare-user-service</sonar.projectKey>
+  		<sonar.organization>batch-747-carolyn-rehm</sonar.organization>
   		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
   		<sonar.coverage.exclusion>com/revature/beans/*.java</sonar.coverage.exclusion>
 	</properties>
@@ -88,11 +88,18 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-				<dependency>
+		
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        
+		<dependency>
 			<groupId>com.github.javafaker</groupId>
 			<artifactId>javafaker</artifactId>
 			<version>0.17.2</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -144,6 +151,28 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
+		</dependency>
+		
+		<dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.8.9</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.8.9</version>
+        </dependency>
+        
+		<dependency>
+  		    <groupId>log4j</groupId>
+  		    <artifactId>log4j</artifactId>
+  		    <version>1.2.17</version>
+  	    </dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
 		</dependency>
  
 	</dependencies>

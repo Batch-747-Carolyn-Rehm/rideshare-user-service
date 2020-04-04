@@ -10,6 +10,6 @@ public interface CarService {
 	public Car getCarById(int id);
 	public Car getCarByUserId(int userId);
 	public Car addCar(Car car);
-	public Car updateCar(Car car);
+	public boolean updateCar(Car car);
 	public String deleteCarById(int id);
 }

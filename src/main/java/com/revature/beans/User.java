@@ -9,7 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -22,6 +24,13 @@ import org.springframework.stereotype.Component;
 
 import org.springframework.stereotype.Component;
 
+/**
+ * User class. All users have an id, username, batch, firstname,
+ * lastname, email, phone, address, city, state, zip.
+ * 
+ * @author Vytautas Klimavicius
+ *
+ */
 @Component
 @Entity
 @Table(name="users")
@@ -81,18 +90,24 @@ public class User implements Serializable {
 	@NotBlank
 	@Column(name = "h_state")
 	private String hState;
-	@NotBlank
 	@Column(name = "w_address")
 	private String wAddress;
-	@NotBlank
 	@Column(name = "w_city")
 	private String wCity;
-	@NotBlank
 	@Column(name = "w_zip")
 	private String wZip;
-	@NotBlank
 	@Column(name = "w_state")
 	private String wState;
+	
+	@Transient
+	private double distance;
+	
+	@Transient
+	private double duration; 
+	
+	@OneToOne
+	@JoinColumn(name="car", unique = true)
+	private Car car;
 	
 	public User() {
 		super();
@@ -172,6 +187,7 @@ public class User implements Serializable {
 		this.wZip = wZip;
 		this.wState = wState;
 	}
+	
 	public User(int userId, @NotBlank String userName, Batch batch, @NotBlank String firstName,
 			@NotBlank String lastName, @Email String email, @NotBlank String phoneNumber, boolean isDriver,
 			boolean isActive, boolean isAcceptingRides, String hAddress, String hCity, String hZip, String hState,
@@ -196,6 +212,74 @@ public class User implements Serializable {
 		this.wZip = wZip;
 		this.wState = wState;
 	}
+	
+	public User(@Valid @NotBlank @Size(min = 3, max = 12) @Pattern(regexp = "^\\w+\\.?\\w+$") String userName,
+			Batch batch,
+			@Valid @NotBlank @Size(max = 30) @Pattern(regexp = "^[a-zA-Z\\u00C0-\\u017F]+[- ]?[a-zA-Z\\u00C0-\\u017F]+$") String firstName,
+			@Valid @NotBlank @Size(max = 30) @Pattern(regexp = "^[a-zA-Z\\u00C0-\\u017F]+[- ]?[a-zA-Z\\u00C0-\\u017F]+$") String lastName,
+			@NotBlank @Email @Pattern(regexp = "^\\w+\\.?\\w+@\\w+\\.[a-zA-Z]{2,4}$") String email,
+			@NotBlank @Pattern(regexp = "^\\(?([0-9]{3})\\)?[-.\\s]?([0-9]{3})[-.\\s]?([0-9]{4})$") String phoneNumber,
+			boolean isDriver, boolean isActive, boolean isAcceptingRides, @NotBlank String hAddress,
+			@NotBlank String hCity, @NotBlank String hZip, @NotBlank String hState, @NotBlank String wAddress,
+			@NotBlank String wCity, @NotBlank String wZip, @NotBlank String wState, double distance, double duration,
+			Car car) {
+		super();
+		this.userName = userName;
+		this.batch = batch;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.phoneNumber = phoneNumber;
+		this.isDriver = isDriver;
+		this.isActive = isActive;
+		this.isAcceptingRides = isAcceptingRides;
+		this.hAddress = hAddress;
+		this.hCity = hCity;
+		this.hZip = hZip;
+		this.hState = hState;
+		this.wAddress = wAddress;
+		this.wCity = wCity;
+		this.wZip = wZip;
+		this.wState = wState;
+		this.distance = distance;
+		this.duration = duration;
+		this.car = car;
+	}
+	
+
+	public User(int userId,
+			@Valid @NotBlank @Size(min = 3, max = 12) @Pattern(regexp = "^\\w+\\.?\\w+$") String userName, Batch batch,
+			@Valid @NotBlank @Size(max = 30) @Pattern(regexp = "^[a-zA-Z\\u00C0-\\u017F]+[- ]?[a-zA-Z\\u00C0-\\u017F]+$") String firstName,
+			@Valid @NotBlank @Size(max = 30) @Pattern(regexp = "^[a-zA-Z\\u00C0-\\u017F]+[- ]?[a-zA-Z\\u00C0-\\u017F]+$") String lastName,
+			@NotBlank @Email @Pattern(regexp = "^\\w+\\.?\\w+@\\w+\\.[a-zA-Z]{2,4}$") String email,
+			@NotBlank @Pattern(regexp = "^\\(?([0-9]{3})\\)?[-.\\s]?([0-9]{3})[-.\\s]?([0-9]{4})$") String phoneNumber,
+			boolean isDriver, boolean isActive, boolean isAcceptingRides, @NotBlank String hAddress,
+			@NotBlank String hCity, @NotBlank String hZip, @NotBlank String hState, @NotBlank String wAddress,
+			@NotBlank String wCity, @NotBlank String wZip, @NotBlank String wState, double distance, double duration) {
+		super();
+		this.userId = userId;
+		this.userName = userName;
+		this.batch = batch;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.phoneNumber = phoneNumber;
+		this.isDriver = isDriver;
+		this.isActive = isActive;
+		this.isAcceptingRides = isAcceptingRides;
+		this.hAddress = hAddress;
+		this.hCity = hCity;
+		this.hZip = hZip;
+		this.hState = hState;
+		this.wAddress = wAddress;
+		this.wCity = wCity;
+		this.wZip = wZip;
+		this.wState = wState;
+		this.distance = distance;
+		this.duration = duration;
+	}
+
+
 	public int getUserId() {
 		return userId;
 	}
@@ -238,10 +322,10 @@ public class User implements Serializable {
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
-	public boolean isDriver() {
+	public boolean getIsDriver() {
 		return isDriver;
 	}
-	public void setDriver(boolean isDriver) {
+	public void setIsDriver(boolean isDriver) {
 		this.isDriver = isDriver;
 	}
 	public boolean isActive() {
@@ -335,13 +419,47 @@ public class User implements Serializable {
 	public void setwState(String wState) {
 		this.wState = wState;
 	}
+	
 
+	public double getDistance() {
+		return distance;
+	}
+
+
+	public void setDistance(double distance) {
+		this.distance = distance;
+	}
+
+
+	public double getDuration() {
+		return duration;
+	}
+
+
+	public void setDuration(double duration) {
+		this.duration = duration;
+	}
+
+	public Car getCar() {
+		return car;
+	}
+
+
+	public void setCar(Car car) {
+		this.car = car;
+	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((batch == null) ? 0 : batch.hashCode());
+		result = prime * result + ((car == null) ? 0 : car.hashCode());
+		long temp;
+		temp = Double.doubleToLongBits(distance);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(duration);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
 		result = prime * result + ((hAddress == null) ? 0 : hAddress.hashCode());
@@ -361,6 +479,8 @@ public class User implements Serializable {
 		result = prime * result + ((wZip == null) ? 0 : wZip.hashCode());
 		return result;
 	}
+
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -375,6 +495,15 @@ public class User implements Serializable {
 				return false;
 		} else if (!batch.equals(other.batch))
 			return false;
+		if (car == null) {
+			if (other.car != null)
+				return false;
+		} else if (!car.equals(other.car))
+			return false;
+		if (Double.doubleToLongBits(distance) != Double.doubleToLongBits(other.distance))
+			return false;
+		if (Double.doubleToLongBits(duration) != Double.doubleToLongBits(other.duration))
+			return false;
 		if (email == null) {
 			if (other.email != null)
 				return false;
@@ -384,7 +513,26 @@ public class User implements Serializable {
 			if (other.firstName != null)
 				return false;
 		} else if (!firstName.equals(other.firstName))
-
+			return false;
+		if (hAddress == null) {
+			if (other.hAddress != null)
+				return false;
+		} else if (!hAddress.equals(other.hAddress))
+			return false;
+		if (hCity == null) {
+			if (other.hCity != null)
+				return false;
+		} else if (!hCity.equals(other.hCity))
+			return false;
+		if (hState == null) {
+			if (other.hState != null)
+				return false;
+		} else if (!hState.equals(other.hState))
+			return false;
+		if (hZip == null) {
+			if (other.hZip != null)
+				return false;
+		} else if (!hZip.equals(other.hZip))
 			return false;
 		if (isAcceptingRides != other.isAcceptingRides)
 			return false;
@@ -408,17 +556,39 @@ public class User implements Serializable {
 			if (other.userName != null)
 				return false;
 		} else if (!userName.equals(other.userName))
-
+			return false;
+		if (wAddress == null) {
+			if (other.wAddress != null)
+				return false;
+		} else if (!wAddress.equals(other.wAddress))
+			return false;
+		if (wCity == null) {
+			if (other.wCity != null)
+				return false;
+		} else if (!wCity.equals(other.wCity))
+			return false;
+		if (wState == null) {
+			if (other.wState != null)
+				return false;
+		} else if (!wState.equals(other.wState))
+			return false;
+		if (wZip == null) {
+			if (other.wZip != null)
+				return false;
+		} else if (!wZip.equals(other.wZip))
 			return false;
 		return true;
 	}
+
+
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", userName=" + userName + ", batch=" + batch + ", firstName=" + firstName
 				+ ", lastName=" + lastName + ", email=" + email + ", phoneNumber=" + phoneNumber + ", isDriver="
 				+ isDriver + ", isActive=" + isActive + ", isAcceptingRides=" + isAcceptingRides + ", hAddress="
 				+ hAddress + ", hCity=" + hCity + ", hZip=" + hZip + ", hState=" + hState + ", wAddress=" + wAddress
-				+ ", wCity=" + wCity + ", wZip=" + wZip + ", wState=" + wState + "]";
+				+ ", wCity=" + wCity + ", wZip=" + wZip + ", wState=" + wState + ", distance=" + distance
+				+ ", duration=" + duration + ", car=" + car + "]";
 	}
 
 }

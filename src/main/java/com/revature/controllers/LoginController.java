@@ -35,8 +35,9 @@ import io.swagger.annotations.ApiOperation;
 
 /**
  * LoginController takes userName  and Password. 
+ * Handles Get requests
  * 
- * @author Bertrick Lappa
+ * @author Vytautas Klimavicius
  */
 
 @RestController
@@ -50,6 +51,11 @@ public class LoginController {
 	@Autowired
 	private DistanceService ds;
 	
+	/**
+	 * HTTP GET method (/login)
+	 * 
+	 * @return Logged User.
+	 */
 	@GetMapping//("/{userName}/{passWord}")
 	public Map<String, Set<String>> login(
 							   @RequestParam(name="userName")String userName,
@@ -79,6 +85,11 @@ public class LoginController {
 		}
 	}
 	
+	/**
+	 * HTTP GET method (/getGoogleApi)
+	 * 
+	 * @return info.
+	 */
 	@GetMapping("/getGoogleApi")
 	public Map<String, Set<String>> getGoogleApi() {
 		Map<String, Set<String>> info = new HashMap<>();

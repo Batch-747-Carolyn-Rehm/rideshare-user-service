@@ -55,7 +55,7 @@ public class CarControllerTest {
 	@Test
 	public void testGettingCarById() throws Exception {
 		
-		Car car = new Car(1, "red", 4, "Honda", "Accord", 2015, new User());
+		Car car = new Car(1, "red", 4, "Honda", "Accord", 2015);
 		when(cs.getCarById(1)).thenReturn(car);
 		
 		mvc.perform(get("/cars/{id}", 1))
@@ -66,7 +66,7 @@ public class CarControllerTest {
 	@Test
 	public void testGettingCarByUserId() throws Exception {
 		
-		Car car = new Car(1, "red", 4, "Honda", "Accord", 2015, new User());
+		Car car = new Car(1, "red", 4, "Honda", "Accord", 2015);
 		when(cs.getCarByUserId(1)).thenReturn(car);
 		
 		mvc.perform(get("/cars/users/{id}", 1))
@@ -77,8 +77,8 @@ public class CarControllerTest {
 	@Test
 	public void testAddingCar() throws Exception {
 				
-		Car car = new Car(1, "red", 4, "Honda", "Accord", 2015, new User());
-		when(cs.addCar(new Car(1, "red", 4, "Honda", "Accord", 2015, new User()))).thenReturn(car);
+		Car car = new Car(1, "red", 4, "Honda", "Accord", 2015);
+		when(cs.addCar(new Car(1, "red", 4, "Honda", "Accord", 2015))).thenReturn(car);
 		
 		mvc.perform(post("/cars").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsString(car)))
 		   .andExpect(status().isCreated())
@@ -88,9 +88,9 @@ public class CarControllerTest {
 	@Test
 	public void testUpdatingCar() throws Exception {
 		
-		Car car = new Car(1, "red", 4, "Honda", "Accord", 2015, new User());
-		when(cs.updateCar(new Car(1, "red", 4, "Honda", "Accord", 2015, new User()))).thenReturn(car);
-		
+		Car car = new Car(1, "red", 4, "Honda", "Accord", 2015);
+		when(cs.updateCar(new Car(1, "red", 4, "Honda", "Accord", 2015))).thenReturn(true);
+	
 		mvc.perform(put("/cars/{id}", 1).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsString(car)))
 		   .andExpect(status().isOk())
 		   .andExpect(jsonPath("$.color").value("red"));
@@ -99,7 +99,7 @@ public class CarControllerTest {
 	@Test
 	public void testDeletingCar() throws Exception {
 		
-		Car car = new Car(1, "red", 4, "Honda", "Accord", 2015, new User());
+		Car car = new Car(1, "red", 4, "Honda", "Accord", 2015);
 		String returnedStr = "Car with id: " + car.getCarId() + " was deleted";
 		when(cs.deleteCarById(1)).thenReturn(returnedStr);
 		

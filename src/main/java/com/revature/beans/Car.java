@@ -7,12 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
 
 import org.springframework.stereotype.Component;
 
@@ -41,6 +38,9 @@ public class Car implements Serializable {
 	@Positive
 	private int seats;
 	
+	@Column(name="seats_available")
+	private int seatsAvailable;
+	
 	@NotBlank
 	private String make;
 	
@@ -51,15 +51,13 @@ public class Car implements Serializable {
 	@Column(name="car_year")
 	private int year;
 	
-	@OneToOne
-	@JoinColumn(name="user_id", unique=true)
-	private User user;
+
 	
 	public Car() {
 		super();
 	}
 
-	public Car(int carId, String color, int seats, String make, String model, int year, User user) {
+	public Car(int carId, String color, int seats, String make, String model, int year) {
 		super();
 		this.carId = carId;
 		this.color = color;
@@ -67,7 +65,6 @@ public class Car implements Serializable {
 		this.make = make;
 		this.model = model;
 		this.year = year;
-		this.user = user;
 	}
 
 	public int getCarId() {
@@ -92,6 +89,14 @@ public class Car implements Serializable {
 
 	public void setSeats(int seats) {
 		this.seats = seats;
+	}
+	
+	public int getSeatsAvailable() {
+		return seatsAvailable;
+	}
+
+	public void setSeatsAvailable(int seatsAvailable) {
+		this.seatsAvailable = seatsAvailable;
 	}
 
 	public String getMake() {
@@ -118,13 +123,6 @@ public class Car implements Serializable {
 		this.year = year;
 	}
 
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
 
 	@Override
 	public int hashCode() {
@@ -135,7 +133,7 @@ public class Car implements Serializable {
 		result = prime * result + ((make == null) ? 0 : make.hashCode());
 		result = prime * result + ((model == null) ? 0 : model.hashCode());
 		result = prime * result + seats;
-		result = prime * result + ((user == null) ? 0 : user.hashCode());
+		result = prime * result + seatsAvailable;
 		result = prime * result + year;
 		return result;
 	}
@@ -154,37 +152,49 @@ public class Car implements Serializable {
 		if (color == null) {
 			if (other.color != null)
 				return false;
-		} 
-		else if (!color.equals(other.color))
+		} else if (!color.equals(other.color))
 			return false;
 		if (make == null) {
 			if (other.make != null)
 				return false;
-		} 
-		else if (!make.equals(other.make))
+		} else if (!make.equals(other.make))
 			return false;
 		if (model == null) {
 			if (other.model != null)
 				return false;
-		} 
-		else if (!model.equals(other.model))
+		} else if (!model.equals(other.model))
 			return false;
 		if (seats != other.seats)
 			return false;
-		if (user == null) {
-			if (other.user != null)
-				return false;
-		} 
-		else if (!user.equals(other.user))
+		if (seatsAvailable != other.seatsAvailable)
 			return false;
-		return year == other.year;
+		if (year != other.year)
+			return false;
+		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "Car [carId=" + carId + ", color=" + color + ", seats=" + seats + ", make=" + make + ", model=" + model
-				+ ", year=" + year + ", user=" + user + "]";
+		return "Car [carId=" + carId + ", color=" + color + ", seats=" + seats + ", seatsAvailable=" + seatsAvailable
+				+ ", make=" + make + ", model=" + model + ", year=" + year + "]";
 	}
+
+	public boolean validateCar() {
+		return validateMakeModelYearSeats() && validateAvailableSeats();
+	}
+
+	private boolean validateAvailableSeats() {
+		// make sure available seats isn't more than seats or negative
+		return seatsAvailable <= seats && seatsAvailable >= 0;
+	}
+
+	private boolean validateMakeModelYearSeats() {
+		// TODO should actually attempt to verify this car exists and the number of
+		// seats is correct
+		// for now, let's just make sure the number of seats isn't 0 or negative.
+		return seats > 0;
+	}
+	
 	
 }
 

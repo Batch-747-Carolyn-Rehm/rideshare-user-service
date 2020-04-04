@@ -11,6 +11,7 @@ import java.util.Set;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -35,6 +36,7 @@ import com.revature.services.BatchService;
 import com.revature.services.DistanceService;
 import com.revature.services.FilterService;
 import com.revature.services.UserService;
+import com.revature.validators.UserValidator;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -64,6 +66,9 @@ public class UserController {
 	private DistanceService ds;
 	
 	@Autowired
+	private UserValidator uv;
+
+	@Autowired
 	private FilterService fs;
 	
 	private ObjectMapper mapper = new ObjectMapper();
@@ -85,88 +90,61 @@ public class UserController {
 	}*/
 	
 	
-	@ApiOperation(value="Returns user drivers", tags= {"User"})
-	@GetMapping("/driver/{address}")
-	public List <User> getTopFiveDrivers(@PathVariable("address")String address) throws ApiException, InterruptedException, IOException {
-		//List<User> aps =  new ArrayList<User>();
-		System.out.println(address);
-		List<String> destinationList = new ArrayList<String>();
-		String [] origins = {address};
-//		
-	    Map<String, User> topfive = new HashMap<String, User>();
-//		
-		for(User d : us.getActiveDrivers()) {
-//			
-			String add = d.gethAddress();
-			String city = d.gethCity();
-			String state = d.gethState();
-			
-			String fullAdd = add + ", " + city + ", " + state;
-			
-			destinationList.add(fullAdd);
-//			
-			topfive.put(fullAdd, d);
-//						
-	}
-//		
-//		System.out.println(destinationList);
-//		
-		String [] destinations = new String[destinationList.size()];
+//	@ApiOperation(value="Returns user drivers", tags= {"User"})
+//	@GetMapping("/driver/{address}")
+//	public List <User> getTopFiveDrivers(@PathVariable("address")String address) throws ApiException, InterruptedException, IOException {
+//		//List<User> aps =  new ArrayList<User>();
+//		System.out.println(address);
+//		List<String> destinationList = new ArrayList<String>();
+//		String [] origins = {address};
 ////		
-	destinations = destinationList.toArray(destinations);
+//	    Map<String, User> topfive = new HashMap<String, User>();
+////		
+//		for(User d : us.getActiveDrivers()) {
+////			
+//			String add = d.gethAddress();
+//			String city = d.gethCity();
+//			String state = d.gethState();
+//			
+//			String fullAdd = add + ", " + city + ", " + state;
+//			
+//			destinationList.add(fullAdd);
+////			
+//			topfive.put(fullAdd, d);
+////						
+//	}
+////		
+////		System.out.println(destinationList);
+////		
+//		String [] destinations = new String[destinationList.size()];
+//////		
+//	destinations = destinationList.toArray(destinations);
+////		
+//	return	ds.distanceMatrix(origins, destinations);
+////		
+////		
+//		//return ds.distanceMatrix();	
 //		
-	return	ds.distanceMatrix(origins, destinations);
-//		
-//		
-		//return ds.distanceMatrix();	
-		
-	}
+//	}
 	
-	/**
-	 * HTTP POST method (/users/filter)
-	 * 
-	 * @param filter object represents the filter criteria
-	 * @return response entity with the total drivers that match the filter criteria
-	 * */
+	//Get Drivers by different filters
 	
 	@ApiOperation(value="Returns drivers by filter",tags= {"User"})
 	@PostMapping("/filter")
-	public ResponseEntity<String> getFilteredDrivers(@RequestBody Filter filters)
-			throws ApiException, InterruptedException, IOException{
-		Set<User> totalDrivers = new HashSet<User>();
-		User currentUser = us.getUserById(filters.getUserId());
-		/**
-		 * Recommendation filter if no input filters are provided
-		 * */
-		if(filters.getFilterTypes().size() == 0) {
-			String fullAddress = currentUser.gethAddress() + ", " + currentUser.gethCity() + ", " + currentUser.gethState();
-			totalDrivers = fs.filterByRecommendation(fullAddress, filters.getBatchId());
-		} 
-		/**
-		 * add drivers based on filter criteria
-		 * */
-		else {
-			for(String filter : filters.getFilterTypes()) {
-				/**
-				 * drivers are calculated based on their home address (current location)
-				 * */
-				switch(filter) {
-				case "batch":{
-					totalDrivers = fs.filterByBatch(filters.getBatchId(), totalDrivers);
-					break;
-				}
-				case "zipcode":{
-					totalDrivers = fs.filterByZipCode(currentUser.gethZip(), totalDrivers);
-					break;
-				}
-				case "city":{
-					totalDrivers = fs.filterByCity(currentUser.gethCity(), totalDrivers);
-					break;
-				}
-				}
-			}
+	public ResponseEntity<List<User>> getFilteredDrivers(
+			@RequestBody Filter filters,
+			@RequestParam(name="sortBy", required=false, defaultValue="userId") String sortBy, 
+			@RequestParam(name="sortDirection", required=false, defaultValue="asc") String sortDirection
+			)
+	{
+
+		List<User> drivers = us.getFilterSortedDriver(filters, sortBy, sortDirection);
+		
+		if(drivers.size() > 0) {
+			return new ResponseEntity(drivers, new HttpHeaders(), HttpStatus.OK);
+		} else {
+			return new ResponseEntity(drivers, new HttpHeaders(), HttpStatus.NOT_FOUND);
 		}
-		return ResponseEntity.ok().body("{ \"Drivers\": " + mapper.writeValueAsString(totalDrivers)+"}");
 	}
 	
 	
@@ -221,102 +199,21 @@ public class UserController {
 	
 	@ApiOperation(value="Adds a new user", tags= {"User"})
 	@PostMapping
-	public Map<String, Set<String>> addUser(@Valid @RequestBody User user, BindingResult result) {
+	public ResponseEntity<Map> addUser(@Valid @RequestBody User user, BindingResult result) {
 		
-		System.out.println(user.isDriver());
-		 Map<String, Set<String>> errors = new HashMap<>();
-		 
-		 for (FieldError fieldError : result.getFieldErrors()) {
-		      String code = fieldError.getCode();
-		      String field = fieldError.getField();
-		      if (code.equals("NotBlank") || code.equals("NotNull")) {
-//		    	  
-		    	  switch (field) {
-		    	  case "userName":
-		    		  errors.computeIfAbsent(field, key -> new HashSet<>()).add("Username field required");
-		    		  break;
-		    	  case "firstName":
-		    		  errors.computeIfAbsent(field, key -> new HashSet<>()).add("First name field required");
-		    		  break;
-		    	  case "lastName":
-		    		  errors.computeIfAbsent(field, key -> new HashSet<>()).add("Last name field required");
-		    		  break;
-		    	  case "wAddress":
-		    		  errors.computeIfAbsent(field, key -> new HashSet<>()).add("Work address field required");
-		    		  break;
-		    	  case "wState":
-		    	  case "hState":
-		    		  errors.computeIfAbsent(field, key -> new HashSet<>()).add("State field required");
-		    		  break;
-		    	  case "phoneNumber":
-		    		  errors.computeIfAbsent(field, key -> new HashSet<>()).add("Phone number field required");
-		    		  break;
-		    	  case "hAddress":
-		    		  errors.computeIfAbsent(field, key -> new HashSet<>()).add("Home address field required");
-		    		  break;
-		    	  case "hZip":
-		    	  case "wZip":
-		    		  errors.computeIfAbsent(field, key -> new HashSet<>()).add("Zip code field required");
-		    		  break;
-		    	  case "hCity":
-		    	  case "wCity":
-		    		  errors.computeIfAbsent(field, key -> new HashSet<>()).add("City field required");
-		    		  break;
-		    	  default:
-		    		  errors.computeIfAbsent(field, key -> new HashSet<>()).add(field+" required");
-		    	  }
-		      }
-		      //username custom error message
-		      else if (code.equals("Size") && field.equals("userName")) {
-		          errors.computeIfAbsent(field, key -> new HashSet<>()).add("Username must be between 3 and 12 characters in length");
-		      }
-		      else if (code.equals("Pattern") && field.equals("userName")) {
-		          errors.computeIfAbsent(field, key -> new HashSet<>()).add("Username may not have any illegal characters such as $@-");
-		      }
-		      else if (code.equals("Valid") && field.equals("userName")) {
-		          errors.computeIfAbsent(field, key -> new HashSet<>()).add("Invalid username");
-		      }
-		      //first name custom error message
-		      else if (code.equals("Size") && field.equals("firstName")) {
-		          errors.computeIfAbsent(field, key -> new HashSet<>()).add("First name cannot be more than 30 characters in length");
-		      }
-		      else if (code.equals("Pattern") && field.equals("firstName")) {
-		          errors.computeIfAbsent(field, key -> new HashSet<>()).add("First name allows only 1 space or hyphen and no illegal characters");
-		      }
-		      else if (code.equals("Valid") && field.equals("firstName")) {
-		          errors.computeIfAbsent(field, key -> new HashSet<>()).add("Invalid first name");
-		      }
-		      //last name custom error message
-		      else if (code.equals("Size") && field.equals("lastName")) {
-		          errors.computeIfAbsent(field, key -> new HashSet<>()).add("Last name cannot be more than 30 characters in length");
-		      }
-		      else if (code.equals("Pattern") && field.equals("lastName")) {
-		          errors.computeIfAbsent(field, key -> new HashSet<>()).add("Last name allows only 1 space or hyphen and no illegal characters");
-		      }
-		      else if (code.equals("Valid") && field.equals("lastName")) {
-		          errors.computeIfAbsent(field, key -> new HashSet<>()).add("Invalid last name");
-		      }
-		      //email custom error messages
-		      else if (code.equals("Email") && field.equals("email")) {
-		              errors.computeIfAbsent(field, key -> new HashSet<>()).add("Invalid Email");
-		      }
-		      else if (code.equals("Pattern") && field.equals("email")) {
-	              errors.computeIfAbsent(field, key -> new HashSet<>()).add("Invalid Email");
-		      }
-		      //phone number custom error messages
-		      else if (code.equals("Pattern") && field.equals("phoneNumber")) {
-	              errors.computeIfAbsent(field, key -> new HashSet<>()).add("Invalid Phone Number");
-		      }
-		    }
-
-			if (errors.isEmpty()) {
-				
-				user.setBatch(bs.getBatchByNumber(user.getBatch().getBatchNumber()));
-		 		us.addUser(user);
-		 		
-
-		 	}
-		    return errors;
+		uv.validate(user, result);
+		
+		Map<String, String> validationInfo = new HashMap<>();
+		for (FieldError error: result.getFieldErrors()) {
+			validationInfo.put(error.getField(), error.getCode());
+		}
+		
+		if (validationInfo.size() == 0) {
+			user.setBatch(bs.getBatchByNumber(user.getBatch().getBatchNumber()));
+	 		us.addUser(user);
+		}
+		
+		return new ResponseEntity<>(validationInfo, HttpStatus.OK);
 		
 	}
 	
@@ -329,9 +226,21 @@ public class UserController {
 	
 	@ApiOperation(value="Updates user by id", tags= {"User"})
 	@PutMapping
-	public User updateUser(@Valid @RequestBody User user) {
-		//System.out.println(user);
-		return us.updateUser(user);
+	public ResponseEntity<Map> updateUser(@Valid @RequestBody User user, BindingResult result) {
+		//validating address using custom validator
+		uv.validate(user, result);
+		System.out.println("validation result is " + result);
+		
+		Map<String, String> validationInfo = new HashMap<>();
+		for (FieldError error: result.getFieldErrors()) {
+			validationInfo.put(error.getField(), error.getCode());
+		}
+		
+		if (validationInfo.size() == 0) {
+			us.updateUser(user);
+		}
+		
+		return new ResponseEntity<>(validationInfo, HttpStatus.OK);
 	}
 	
 	/**
