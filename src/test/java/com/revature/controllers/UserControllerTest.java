@@ -26,6 +26,7 @@ import com.revature.beans.Batch;
 import com.revature.beans.User;
 import com.revature.services.BatchService;
 import com.revature.services.DistanceService;
+import com.revature.services.FilterService;
 import com.revature.services.UserService;
 import com.revature.validators.UserValidator;
 
@@ -50,6 +51,9 @@ public class UserControllerTest {
 	
 	@MockBean
 	private DistanceService ds;
+	
+	@MockBean
+	private FilterService fs;
 	
 	@Test
 	public void testGettingUsers() throws Exception {
@@ -126,27 +130,30 @@ public class UserControllerTest {
 	public void testAddingUser() throws Exception {
 		
 		Batch batch = new Batch(111, "address");
-		User user = new User(1, "userName", batch, "adonis", "cabreja", "adonis@gmail.com", "123-456-789");
+		User user = new User(1, "userName", batch, "adonis", "cabreja", "adonis@gmail.com", "123-456-7891");
 		user.setIsDriver(true);
 		user.setActive(true);
 		user.setAcceptingRides(true);
+		user.sethAddress("blah");
+		user.sethCity("blah");
+		user.sethState("bs");
+		user.sethZip("11111");
 		
 		when(us.addUser(user)).thenReturn(user);
 		
-		// This is a legitimate failure, we should be returning CREATED not OK, on a successful create
-//		mvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsString(user)))
-//		   .andExpect(status().isCreated())
-//		   .andExpect(jsonPath("$.userName").value("userName"));
 		mvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsString(user)))
-		   .andExpect(status().isOk()); // we're returning validation info not a new user
-//		   .andExpect(jsonPath("$.userName").value("userName"));
+		   .andExpect(status().isCreated()); // we're returning validation info not a new user
 	}
 	
 	@Test
 	public void testUpdatingUser() throws Exception {
 		
 		Batch batch = new Batch(111, "address");
-		User user = new User(1, "userName", batch, "adonis", "cabreja", "adonis@gmail.com", "123-456-789");
+		User user = new User(1, "userName", batch, "adonis", "cabreja", "adonis@gmail.com", "123-456-7890");
+		user.sethAddress("blah");
+		user.sethCity("blah");
+		user.sethState("bs");
+		user.sethZip("11111");
 		
 		when(us.updateUser(user)).thenReturn(user);
 		

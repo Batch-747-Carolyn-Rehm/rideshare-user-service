@@ -82,7 +82,7 @@ public class CarControllerTest {
 		
 		// this is a legitimate error, should be created, not OK
 		mvc.perform(post("/cars").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsString(car)))
-		   .andExpect(status().isOk());
+		   .andExpect(status().isCreated());
 //		   .andExpect(jsonPath("$.color").value("red"));
 	}
 		
