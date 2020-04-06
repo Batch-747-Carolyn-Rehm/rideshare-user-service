@@ -103,9 +103,11 @@ public class CarController {
 		
 		if (validationInfo.size() == 0) {
 			cs.addCar(car);
+			return new ResponseEntity<>(validationInfo, HttpStatus.CREATED);
+		} else {
+			return new ResponseEntity<>(validationInfo, HttpStatus.BAD_REQUEST);
 		}
 		
-		return new ResponseEntity<>(validationInfo, HttpStatus.OK);
 	}
 	
 	/**
@@ -125,9 +127,11 @@ public class CarController {
 		
 		if (validationInfo.size() == 0) {
 			cs.updateCar(car);
+			return new ResponseEntity<>(validationInfo, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(validationInfo, HttpStatus.BAD_REQUEST);
 		}
 		
-		return new ResponseEntity<>(validationInfo, HttpStatus.OK);
 	}
 	
 	
