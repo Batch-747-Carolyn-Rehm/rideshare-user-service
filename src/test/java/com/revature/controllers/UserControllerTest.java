@@ -146,6 +146,17 @@ public class UserControllerTest {
 	}
 	
 	@Test
+	public void testAddingBadUser() throws Exception {
+		
+		User user = new User();
+		
+		when(us.addUser(user)).thenReturn(user);
+		
+		mvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsString(user)))
+		   .andExpect(status().isBadRequest()); // we're returning validation info not a new user
+	}
+	
+	@Test
 	public void testUpdatingUser() throws Exception {
 		
 		Batch batch = new Batch(111, "address");
@@ -159,6 +170,17 @@ public class UserControllerTest {
 		
 		mvc.perform(put("/users/", 1).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsString(user)))
 		   .andExpect(status().isOk());
+	}
+	
+	@Test
+	public void testUpdatingBadUser() throws Exception {
+		
+		User user = new User();
+		
+		when(us.updateUser(user)).thenReturn(user);
+		
+		mvc.perform(put("/users/", 1).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsString(user)))
+		   .andExpect(status().isBadRequest());
 	}
 	
 	@Test
