@@ -32,14 +32,14 @@ public class LoggingAspect {
   @Before("execution(* com.revature.controllers..*(..))")
   public void logMethodCall(JoinPoint point) {
     HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-    logs.info("\033[0;32m" + "The service called is: " + request.getMethod() + 
-    		"/" + request.getRequestURI() + "\033[0;34m" + " and method used : " + point.getSignature().getName() + "()" + "\033[0m");
+    logs.info("The service called is: " + request.getMethod() + 
+    		"/" + request.getRequestURI() + " and method used : " + point.getSignature().getName() + "()");
   }  
   
   @AfterThrowing(pointcut="execution(* com.revature.controllers..*(..))", throwing = "ex")
   public void logError(Exception ex) throws Throwable {
 	HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-	logs.error("\033[0;31m" + "The service called is: " + request.getMethod()  +
-    		"/" + request.getRequestURI() + " Error exception: " + ex + "\033[0m");
+	logs.error("The service called is: " + request.getMethod()  +
+    		"/" + request.getRequestURI() + " Error exception: " + ex);
   }
 }
