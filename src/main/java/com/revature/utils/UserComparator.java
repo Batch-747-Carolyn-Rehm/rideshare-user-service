@@ -15,16 +15,26 @@ public class UserComparator implements Comparator<User>, Serializable{
 		return 0;
 	}
 	
-	public static Comparator<User> getComparator(String sortBy, String sortDirection) {
+	public static Comparator<User> getComparator(String sortBy, boolean isAsc) {
 		Comparator<User> comparator = null;
-		boolean isAsc = sortDirection.equalsIgnoreCase("asc") || !sortDirection.equalsIgnoreCase("desc");
-		
+
 		switch(sortBy) {
-		case "name":
-			comparator = Comparator.comparing(User::getFirstName);
-			break;
-		default:
-			comparator = Comparator.comparing(User::getDistance);
+			case "userId":
+				comparator = Comparator.comparing(User::getUserId);
+				break;
+			case "name":
+				comparator = Comparator.comparing(User::getFirstName);
+				break;
+			case "duration":
+				comparator = Comparator.comparing(User::getDuration);
+				break;
+			case "seats":
+				comparator = Comparator.comparing(User::getCar, (c1, c2) -> {
+					return c1.getSeatsAvailable() - c2.getSeatsAvailable();
+				});
+				break;
+			default:
+				comparator = Comparator.comparing(User::getDistance);
 		}
 		
 		if(!isAsc) {

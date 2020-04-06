@@ -148,7 +148,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<User> getFilterSortedDriver(Filter filters, String sortBy, String sortDirection) {
+	public List<User> getFilterSortedDriver(Filter filters, String sortBy, boolean isAsc) {
 		
 		// Get reference to the Driver Cache
 		Map<Integer, List<User>> distanceCache = dc.getDriverDistanceCache();
@@ -208,7 +208,7 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		return totalDrivers.stream()
-				.sorted(UserComparator.getComparator(sortBy, sortDirection))
+				.sorted(UserComparator.getComparator(sortBy, isAsc))
 				.collect(Collectors.toList());
 	}
 

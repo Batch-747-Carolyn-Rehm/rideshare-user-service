@@ -2,6 +2,7 @@ package com.revature.controllers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.maps.errors.ApiException;
@@ -133,18 +135,28 @@ public class UserController {
 	@PostMapping("/filter")
 	public ResponseEntity<List<User>> getFilteredDrivers(
 			@RequestBody Filter filters,
-			@RequestParam(name="sortBy", required=false, defaultValue="userId") String sortBy, 
+			@RequestParam(name="sortBy", required=false, defaultValue="distance") String sortBy, 
 			@RequestParam(name="sortDirection", required=false, defaultValue="asc") String sortDirection
 			)
 	{
-
-		List<User> drivers = us.getFilterSortedDriver(filters, sortBy, sortDirection);
+		boolean isAsc;
+		String[] sortByValues = new String[] {"userId", "distance", "duration", "name", "seats"};
 		
-		if(drivers.size() > 0) {
-			return new ResponseEntity(drivers, new HttpHeaders(), HttpStatus.OK);
+		if(sortDirection.equalsIgnoreCase("asc")) {
+			isAsc = true;
+		} else if (sortDirection.equalsIgnoreCase("desc")) {
+			isAsc = false;
 		} else {
-			return new ResponseEntity(drivers, new HttpHeaders(), HttpStatus.NOT_FOUND);
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid sort direction value");
 		}
+		
+		if(!Arrays.asList(sortByValues).contains(sortBy.toLowerCase())) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid sortBy value");
+		}
+		
+		List<User> drivers = us.getFilterSortedDriver(filters, sortBy, isAsc);
+		return new ResponseEntity<List<User>>(drivers, HttpStatus.OK);
+		
 	}
 	
 	
