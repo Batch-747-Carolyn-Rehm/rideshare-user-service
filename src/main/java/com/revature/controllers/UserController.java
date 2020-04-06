@@ -70,9 +70,17 @@ public class UserController {
 
 	@Autowired
 	private FilterService fs;
+	
 	private ObjectMapper mapper = new ObjectMapper();
 	
-	//Get Drivers by different filters
+	
+	/**
+	 * @param filters represents the filter criteria
+	 * @param sortBy represents the criteria to sort the results
+	 * @param sortDirection represents the direction to sort the results
+	 * @return response entity that contains the filtered and sorted driver results
+	 * */
+	
 	@ApiOperation(value="Returns drivers by filter",tags= {"User"})
 	@PostMapping("/filter")
 	public ResponseEntity<List<User>> getFilteredDrivers(
@@ -170,6 +178,7 @@ public class UserController {
 	@ApiOperation(value="Updates user by id", tags= {"User"})
 	@PutMapping
 	public ResponseEntity<Map> updateUser(@Valid @RequestBody User user, BindingResult result) {
+		
 		uv.validate(user, result);
 		
 		Map<String, String> validationInfo = new HashMap<>();

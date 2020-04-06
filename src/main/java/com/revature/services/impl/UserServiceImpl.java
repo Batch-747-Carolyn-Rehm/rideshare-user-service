@@ -178,6 +178,7 @@ public class UserServiceImpl implements UserService {
 			totalDrivers = new HashSet<>(allDrivers);
 		}
 		
+		
 		//recommendation filter if no input filters are provided
 		if(filters.getFilterTypes().size() == 0) {
 			String fullAddress = currentUser.gethAddress() + ", " + currentUser.gethCity() + ", " + currentUser.gethState();

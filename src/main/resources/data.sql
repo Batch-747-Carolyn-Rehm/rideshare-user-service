@@ -121,4 +121,3 @@ insert into users (user_id, email, first_name, h_address, h_city,h_state, h_zip,
     '285-333-3238', 'Sheriff', '3 Dexter Alley', 'Frederick', 'MD', '21705', 1,41),
 (42, 'CalamityJane@deadwood.com', 'Calamity', '15017 75th Rd', 'Flushing', 'NY', '11367', false, false, true, 'Jane',
     '285-444-3238', 'Shootin', '3 Dexter Alley', 'Frederick', 'MD', '21705', 1,42);
-

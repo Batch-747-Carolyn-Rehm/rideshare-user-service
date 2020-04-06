@@ -16,6 +16,11 @@ import com.revature.services.DistanceService;
 import com.revature.services.FilterService;
 import com.revature.services.UserService;
 
+/**
+ * Used to filter driver results
+ * 
+ * @author Matthias Quintero & Michael Tsang
+ * */
 @Service
 public class FilterServiceImpl implements FilterService {
 
@@ -26,7 +31,12 @@ public class FilterServiceImpl implements FilterService {
 	private UserService us;
 
 	private Iterator<User> tempDrivers = null;
-
+	
+	/**
+	 * @param batchId represents the user's batch number
+	 * @param drivers represents the cumulative drivers
+	 * @return a set of filtered cumulative drivers
+	 * */
 	@Override
 	public Set<User> filterByBatch(int batchId, Set<User> drivers) {
 		tempDrivers = drivers.iterator();
@@ -38,7 +48,12 @@ public class FilterServiceImpl implements FilterService {
 		}
 		return drivers;
 	}
-
+	
+	/**
+	 * @param zip represents the user's home address zip code
+	 * @param drivers represents the cumulative drivers
+	 * @return a set of filtered cumulative drivers
+	 * */
 	@Override
 	public Set<User> filterByZipCode(String zip, Set<User> drivers) {
 		tempDrivers = drivers.iterator();
@@ -50,7 +65,12 @@ public class FilterServiceImpl implements FilterService {
 		}
 		return drivers;
 	}
-
+	
+	/**
+	 * @param city represents the user's home address city
+	 * @param drivers represents the cumulative drivers
+	 * @return a set of filtered cumulative drivers
+	 * */
 	@Override
 	public Set<User> filterByCity(String city, Set<User> drivers) {
 		tempDrivers = drivers.iterator();
@@ -62,12 +82,20 @@ public class FilterServiceImpl implements FilterService {
 		}
 		return drivers;
 	}
-
+	
+	/**
+	 * @param address represents the user's home address
+	 * @param batchId represents the user's batch number
+	 * @param totalDrivers represents the cumulative drivers
+	 * @return a set of filtered cumulative drivers
+	 * */
 	@Override
 	public Set<User> filterByRecommendation(String address, int batchId, Set<User> totalDrivers) throws ApiException, InterruptedException, IOException {
-		for(User u : totalDrivers) {
+		tempDrivers = totalDrivers.iterator();
+		while(tempDrivers.hasNext()) {
+			User u = tempDrivers.next();
 			if (!u.isActive() || u.getBatch().getBatchNumber() != batchId) {
-				totalDrivers.remove(u);
+				tempDrivers.remove();
 			}
 		}
 		return totalDrivers;

@@ -34,6 +34,7 @@ public class DistanceServiceImpl implements DistanceService {
 	@Autowired
 	private UserService us;
 
+	
 	/**
 	 * Calculates distances between the current user and a list of drivers, adding those distances
 	 * to the drivers
