@@ -82,7 +82,7 @@ insert into users (user_id, email, first_name, h_address, h_city,h_state, h_zip,
     '281-555-3238', 'BillyR', '3 Dexter Alley', 'Frederick', 'MD', '21705', 1,23),
 (24, 'TomHanks@senate.gov', 'Tom', '74 Kingwood St', 'Morgantown', 'WV', '26501', false, false, true, 'Hanks',
     '281-666-3238', 'TomHnk', '3 Dexter Alley', 'Frederick', 'MD', '21705', 1,24),
-(25, 'VarusMorn@senate.gov', 'Tom', '74 Pierce St #APT G', 'Morgantown', 'WV', '26501', false, false, true, 'Morn',
+(25, 'VarusMorn@senate.gov', 'Varrus', '74 Pierce St #APT G', 'Morgantown', 'WV', '26501', false, false, true, 'Morn',
     '281-777-3238', 'Varrus', '3 Dexter Alley', 'Frederick', 'MD', '21705', 1,25),
 
 (26, 'JuliusAugustus@enate.gov', 'Julius', '1704 Park Vista Dr', 'Arlington', 'TX', '76012', false, false, true, 'Augustus',
@@ -118,7 +118,7 @@ insert into users (user_id, email, first_name, h_address, h_city,h_state, h_zip,
 (40, 'JackSparrow@yarr.com', 'Jack', '55 La Salle St #12K', 'New York', 'NY', '10027', false, false, true, 'Sparrow',
     '285-222-3238', 'Yoho', '3 Dexter Alley', 'Frederick', 'MD', '21705', 1,40),
 (41, 'SethBullock@deadwood.com', 'Seth', '2216 White Cornus Ln', 'Reston', 'VA', '20191', false, false, true, 'Bullock',
-    '285-333-3238', 'Sheriff', '3 Dexter Alley', 'Frederick', 'MD', '21705', 1,41),
+    '285-333-3238', 'Sheriff', '3 Dexter Alley', 'Frederick', 'MD', '21705', 2,41),
 (42, 'CalamityJane@deadwood.com', 'Calamity', '15017 75th Rd', 'Flushing', 'NY', '11367', false, false, true, 'Jane',
     '285-444-3238', 'Shootin', '3 Dexter Alley', 'Frederick', 'MD', '21705', 1,42);
 

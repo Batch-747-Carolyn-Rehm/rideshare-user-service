@@ -47,7 +47,7 @@ public class DistanceServiceImpl implements DistanceService {
 	@Override
 	public void getDistances(User originUser, List<User> driverList)
 			throws ApiException, InterruptedException, IOException {
-		
+		System.out.println(driverList);
 		String fullAddress = originUser.gethAddress() + ", " + originUser.gethCity() + ", " + originUser.gethState();
 		String[] origins = {fullAddress};
 		
