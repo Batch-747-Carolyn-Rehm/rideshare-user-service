@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,12 +40,12 @@ public class CarServiceImplTest {
 	
 	@Test
 	public void testGettingCarById() {
-		
-		Car expected = new Car(1, "red", 4, "Honda", "Accord", 2015);
-		when(cr.getOne(1)).thenReturn(expected);
+		Car car = new Car(1, "red", 4, "Honda", "Accord", 2015);
+		final Optional<Car> expected = Optional.of(car);
+		when(cr.findById(1)).thenReturn(expected);
 		Car actual = csi.getCarById(1);
 		
-		assertEquals(actual, expected);
+		assertEquals(actual, car);
 	}
 	
 	@Test

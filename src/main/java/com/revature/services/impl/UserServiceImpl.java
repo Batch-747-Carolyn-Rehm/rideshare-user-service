@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -160,7 +161,7 @@ public class UserServiceImpl implements UserService {
 			// Set totalDrivers to list from cache
 			totalDrivers = new HashSet<User>(distanceCache.get(currentUser.getUserId()));
 		} else {
-			// Pull from DB, run through distanceMatrix, add to cache
+			// Pull from DB, run through getDistance, add to cache
 			List<User> allDrivers = getActiveDrivers();
 			
 			try {
@@ -182,7 +183,16 @@ public class UserServiceImpl implements UserService {
 			String fullAddress = currentUser.gethAddress() + ", " + currentUser.gethCity() + ", " + currentUser.gethState();
 			try {
 				totalDrivers = fs.filterByRecommendation(fullAddress, filters.getBatchId(), totalDrivers);
+
+				Iterator<User> i = totalDrivers.iterator();
+				while(i.hasNext() ) {
+					User u = i.next();
+					if(u.getDistance() > 8046.72 || u.getUserId() == currentUser.getUserId() || u.getCar().getSeatsAvailable() == 0) {
+						i.remove();
+					}
+				}
 			} catch (ApiException | InterruptedException | IOException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} 
