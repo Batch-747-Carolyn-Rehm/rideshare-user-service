@@ -174,12 +174,11 @@ public class UserServiceImpl implements UserService {
 			List<User> allDrivers = new ArrayList<User>();
 			
 			if(pageResult.hasContent()) {
-				allDrivers =  pageResult.getContent();
+				allDrivers =  new ArrayList(pageResult.getContent());
 			} else {
 				return allDrivers;
 			}
 			
-			System.out.println(allDrivers.toString());
 			
 			try {
 				ds.getDistances(currentUser, allDrivers);
