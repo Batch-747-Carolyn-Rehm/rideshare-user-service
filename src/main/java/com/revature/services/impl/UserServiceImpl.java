@@ -1,10 +1,7 @@
 package com.revature.services.impl;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -151,34 +148,73 @@ public class UserServiceImpl implements UserService {
 		ur.deleteById(id);
 		return "User with id: " + id + " was deleted.";
 	}
-
+	
+	/**
+	* Provides Filters and sort criteria to display a list of available drivers
+	*
+	* @param filters represents the filter criteria
+	* @param sortBy represents the criteria to sort the results
+	* @param sortDirection represents the direction to sort the results
+	* @return List of drivers that have been filtered and sorted
+	*/
 	@Override
 	public List<User> getFilterSortedDriver(Filter filters, String sortBy, String sortDirection,
 			Integer pageNo, Integer pageSize) {
 		
+
+		User currentUser = getUserById(filters.getUserId());
+		
+		Set<User> totalDrivers = getDriversForUser(currentUser);
+
+		//recommendation filter if no input filters are provided
+		if(filters.getFilterTypes().isEmpty()) {
+			String fullAddress = currentUser.gethAddress() + ", " + currentUser.gethCity() + ", " + currentUser.gethState();
+			try {
+				totalDrivers = fs.filterByRecommendation(fullAddress, filters.getBatchId(), totalDrivers);
+			} catch (ApiException | InterruptedException | IOException e) {
+				e.printStackTrace();
+			}
+		} 
+		//add drivers based on filter criteria
+		else {
+			for(String filter : filters.getFilterTypes()) {
+				//drivers are calculated based on their home address (current location)
+				switch(filter) {
+				case "batch":
+					totalDrivers = fs.filterByBatch(filters.getBatchId(), totalDrivers);
+					break;
+				case "zipcode":
+					totalDrivers = fs.filterByZipCode(currentUser.gethZip(), totalDrivers);
+					break;
+				case "city":
+					totalDrivers = fs.filterByCity(currentUser.gethCity(), totalDrivers);
+					break;
+				}
+			}
+		}
+		
+		return totalDrivers.stream()
+				.sorted(UserComparator.getComparator(sortBy, sortDirection))
+				.collect(Collectors.toList());
+	}
+	
+	/**
+	* Provides a list of available drivers with their distances to a current user
+	*
+	* @param currentUser represents the logged-in user on the app which distances will be calculated from
+	* @return List of drivers with distances and duration-to added
+	*/
+	private Set<User> getDriversForUser(User currentUser) {
 		// Get reference to the Driver Cache
 		Map<Integer, List<User>> distanceCache = dc.getDriverDistanceCache();
-		
-				
 		Set<User> totalDrivers = null;
-		User currentUser = getUserById(filters.getUserId());
 		
 		if (distanceCache.containsKey(currentUser.getUserId())) {
 			// Set totalDrivers to list from cache
-			totalDrivers = new HashSet<User>(distanceCache.get(currentUser.getUserId()));
+			totalDrivers = new HashSet<>(distanceCache.get(currentUser.getUserId()));
 		} else {
-			//make page request from parameters
-			Pageable paging = PageRequest.of(pageNo,pageSize);
-			Page<User> pageResult =  ur.getActiveDrivers(paging);
-			
-			List<User> allDrivers = new ArrayList<User>();
-			
-			if(pageResult.hasContent()) {
-				allDrivers =  new ArrayList(pageResult.getContent());
-			} else {
-				return allDrivers;
-			}
-			
+			// Pull from DB, run through getDistance, add to cache
+			List<User> allDrivers = getActiveDrivers();
 			
 			try {
 				ds.getDistances(currentUser, allDrivers);
@@ -194,48 +230,7 @@ public class UserServiceImpl implements UserService {
 			totalDrivers = new HashSet<>(allDrivers);
 		}
 		
-		//recommendation filter if no input filters are provided
-		if(filters.getFilterTypes().size() == 0) {
-			String fullAddress = currentUser.gethAddress() + ", " + currentUser.gethCity() + ", " + currentUser.gethState();
-			try {
-				totalDrivers = fs.filterByRecommendation(fullAddress, filters.getBatchId(), totalDrivers);
-
-				Iterator<User> i = totalDrivers.iterator();
-				while(i.hasNext() ) {
-					User u = i.next();
-					if(u.getDistance() > 8046.72 || u.getUserId() == currentUser.getUserId() || u.getCar().getSeatsAvailable() == 0) {
-						i.remove();
-					}
-				}
-			} catch (ApiException | InterruptedException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} 
-		//add drivers based on filter criteria
-		else {
-			for(String filter : filters.getFilterTypes()) {
-				//drivers are calculated based on their home address (current location)
-				switch(filter) {
-				case "batch":{
-					totalDrivers = fs.filterByBatch(filters.getBatchId(), totalDrivers);
-					break;
-				}
-				case "zipcode":{
-					totalDrivers = fs.filterByZipCode(currentUser.gethZip(), totalDrivers);
-					break;
-				}
-				case "city":{
-					totalDrivers = fs.filterByCity(currentUser.gethCity(), totalDrivers);
-					break;
-				}
-				}
-			}
-		}
-		
-		return totalDrivers.stream()
-				.sorted(UserComparator.getComparator(sortBy, sortDirection))
-				.collect(Collectors.toList());
+		return totalDrivers;
 	}
 
 }

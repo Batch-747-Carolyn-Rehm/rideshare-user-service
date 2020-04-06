@@ -34,6 +34,7 @@ import com.revature.services.JSONReaderService;
 
 
 public interface DistanceService {
+	
 	public void getDistances (User originUser, List<User> driverList) throws ApiException, InterruptedException, IOException;
 	
 	// Place key googleMapAPIKey & value apiKey (to be shared on slack) into Environment Vars.
