@@ -1,6 +1,7 @@
 package com.revature.services.impl;
 
 import static org.junit.Assert.assertEquals;
+
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -40,6 +41,7 @@ public class CarServiceImplTest {
 	
 	@Test
 	public void testGettingCarById() {
+		
 		Car car = new Car(1, "red", 4, "Honda", "Accord", 2015);
 		final Optional<Car> expected = Optional.of(car);
 		when(cr.findById(1)).thenReturn(expected);
