@@ -41,7 +41,7 @@ public class FilterServiceImpl implements FilterService {
 	public Set<User> filterByBatch(int batchId, Set<User> drivers) {
 		tempDrivers = drivers.iterator();
 		while (tempDrivers.hasNext()) {
-			User u = (User) tempDrivers.next();
+			User u = tempDrivers.next();
 			if (u.getBatch().getBatchNumber() != batchId || !u.isActive()) {
 				tempDrivers.remove();
 			}
@@ -58,7 +58,7 @@ public class FilterServiceImpl implements FilterService {
 	public Set<User> filterByZipCode(String zip, Set<User> drivers) {
 		tempDrivers = drivers.iterator();
 		while (tempDrivers.hasNext()) {
-			User u = (User) tempDrivers.next();
+			User u = tempDrivers.next();
 			if (!u.gethZip().equals(zip) || !u.isActive()) {
 				tempDrivers.remove();
 			}
@@ -75,7 +75,7 @@ public class FilterServiceImpl implements FilterService {
 	public Set<User> filterByCity(String city, Set<User> drivers) {
 		tempDrivers = drivers.iterator();
 		while (tempDrivers.hasNext()) {
-			User u = (User) tempDrivers.next();
+			User u = tempDrivers.next();
 			if (!u.gethCity().equals(city) || !u.isActive()) {
 				tempDrivers.remove();
 			}
