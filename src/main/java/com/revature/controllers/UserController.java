@@ -154,10 +154,11 @@ public class UserController {
 		if (validationInfo.size() == 0) {
 			user.setBatch(bs.getBatchByNumber(user.getBatch().getBatchNumber()));
 	 		us.addUser(user);
+	 		return new ResponseEntity<>(validationInfo, HttpStatus.CREATED);
+		} else {
+			return new ResponseEntity<>(validationInfo, HttpStatus.BAD_REQUEST);
 		}
-		
-		return new ResponseEntity<>(validationInfo, HttpStatus.OK);
-		
+			
 	}
 	
 	/**
@@ -179,9 +180,11 @@ public class UserController {
 		
 		if (validationInfo.size() == 0) {
 			us.updateUser(user);
+			return new ResponseEntity<>(validationInfo, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(validationInfo, HttpStatus.BAD_REQUEST);
 		}
 		
-		return new ResponseEntity<>(validationInfo, HttpStatus.OK);
 	}
 	
 	/**
