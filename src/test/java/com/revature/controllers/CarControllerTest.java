@@ -80,10 +80,18 @@ public class CarControllerTest {
 		Car car = new Car(1, "red", 4, "Honda", "Accord", 2015);
 		when(cs.addCar(new Car(1, "red", 4, "Honda", "Accord", 2015))).thenReturn(car);
 		
-		// this is a legitimate error, should be created, not OK
 		mvc.perform(post("/cars").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsString(car)))
-		   .andExpect(status().isOk());
-//		   .andExpect(jsonPath("$.color").value("red"));
+		   .andExpect(status().isCreated());
+	}
+	
+	@Test
+	public void testAddingBadCar() throws Exception {
+				
+		Car car = new Car();
+		when(cs.addCar(car)).thenReturn(car);
+		
+		mvc.perform(post("/cars").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsString(car)))
+		   .andExpect(status().isBadRequest());
 	}
 		
 	@Test
@@ -92,10 +100,18 @@ public class CarControllerTest {
 		Car car = new Car(1, "red", 4, "Honda", "Accord", 2015);
 		when(cs.updateCar(new Car(1, "red", 4, "Honda", "Accord", 2015))).thenReturn(true);
 	
-		// this is a legitimate error, should be accepted, not ok
 		mvc.perform(put("/cars/", 1).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsString(car)))
 		   .andExpect(status().isOk());
-//		   .andExpect(jsonPath("$.color").value("red"));
+	}
+	
+	@Test
+	public void testUpdatingBadCar() throws Exception {
+		
+		Car car = new Car();
+		when(cs.updateCar(car)).thenReturn(true);
+	
+		mvc.perform(put("/cars/", 1).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsString(car)))
+		   .andExpect(status().isBadRequest());
 	}
 	
 	@Test
