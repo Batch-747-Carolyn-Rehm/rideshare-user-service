@@ -70,12 +70,9 @@ public class UserController {
 
 	@Autowired
 	private FilterService fs;
-	
 	private ObjectMapper mapper = new ObjectMapper();
 	
-	
 	//Get Drivers by different filters
-	
 	@ApiOperation(value="Returns drivers by filter",tags= {"User"})
 	@PostMapping("/filter")
 	public ResponseEntity<List<User>> getFilteredDrivers(
@@ -159,10 +156,11 @@ public class UserController {
 		if (validationInfo.size() == 0) {
 			user.setBatch(bs.getBatchByNumber(user.getBatch().getBatchNumber()));
 	 		us.addUser(user);
+	 		return new ResponseEntity<>(validationInfo, HttpStatus.CREATED);
+		} else {
+			return new ResponseEntity<>(validationInfo, HttpStatus.BAD_REQUEST);
 		}
-		
-		return new ResponseEntity<>(validationInfo, HttpStatus.OK);
-		
+			
 	}
 	
 	/**
@@ -175,7 +173,6 @@ public class UserController {
 	@ApiOperation(value="Updates user by id", tags= {"User"})
 	@PutMapping
 	public ResponseEntity<Map> updateUser(@Valid @RequestBody User user, BindingResult result) {
-		
 		uv.validate(user, result);
 		
 		Map<String, String> validationInfo = new HashMap<>();
@@ -185,9 +182,11 @@ public class UserController {
 		
 		if (validationInfo.size() == 0) {
 			us.updateUser(user);
+			return new ResponseEntity<>(validationInfo, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(validationInfo, HttpStatus.BAD_REQUEST);
 		}
 		
-		return new ResponseEntity<>(validationInfo, HttpStatus.OK);
 	}
 	
 	/**

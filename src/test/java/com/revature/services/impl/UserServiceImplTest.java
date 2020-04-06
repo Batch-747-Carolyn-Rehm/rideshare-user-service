@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,11 +40,12 @@ public class UserServiceImplTest {
 	@Test
 	public void testGettingUserById() {
 		
-		User expected = new User(1, "userName", new Batch(), "adonis", "cabreja", "adonis@gmail.com", "123-456-789");
-		when(ur.getOne(1)).thenReturn(expected);
+		User user = new User(1, "userName", new Batch(), "adonis", "cabreja", "adonis@gmail.com", "123-456-789");
+		final Optional<User> expected = Optional.of(user);
+		when(ur.findById(1)).thenReturn(expected);
 		User actual = usi.getUserById(1);
 		
-		assertEquals(expected, actual);
+		assertEquals(user, actual);
 	}
 	
 	@Test

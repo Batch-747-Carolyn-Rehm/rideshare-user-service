@@ -213,7 +213,6 @@ public class User implements Serializable {
 		this.wZip = wZip;
 		this.wState = wState;
 	}
-	
 
 	public User(int userId,
 			@Valid @NotBlank @Size(min = 3, max = 12) @Pattern(regexp = "^\\w+\\.?\\w+$") String userName, Batch batch,
@@ -388,7 +387,6 @@ public class User implements Serializable {
 		this.wState = wState;
 	}
 	
-
 	public double getDistance() {
 		return distance;
 	}
@@ -397,7 +395,6 @@ public class User implements Serializable {
 	public void setDistance(double distance) {
 		this.distance = distance;
 	}
-
 
 	public double getDuration() {
 		return duration;

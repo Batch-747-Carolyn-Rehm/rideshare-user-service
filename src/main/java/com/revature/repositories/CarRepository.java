@@ -15,15 +15,7 @@ import com.revature.beans.Car;
  */
 
 @Repository
-public interface CarRepository extends JpaRepository<Car, Integer> {
-	
-	/**
-	 * Custom query that uses the @Query annotation to select a car by the user's id.
-	 * 
-	 * @param userId represents the user's id.
-	 * @return Check {@link com.revature.services.impl.UserServiceImpl}
-	 */
-	
+public interface CarRepository extends JpaRepository<Car, Integer> {	
 	
 	/**
 	 * Custom query that uses the @Query annotation to select a car by 

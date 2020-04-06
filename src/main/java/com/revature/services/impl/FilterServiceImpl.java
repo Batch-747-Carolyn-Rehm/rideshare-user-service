@@ -3,6 +3,7 @@ package com.revature.services.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -24,11 +25,15 @@ public class FilterServiceImpl implements FilterService {
 	@Autowired
 	private UserService us;
 
+	private Iterator<User> tempDrivers = null;
+
 	@Override
 	public Set<User> filterByBatch(int batchId, Set<User> drivers) {
-		for (User u : drivers) {
+		tempDrivers = drivers.iterator();
+		while (tempDrivers.hasNext()) {
+			User u = (User) tempDrivers.next();
 			if (u.getBatch().getBatchNumber() != batchId || !u.isActive()) {
-				drivers.remove(u);
+				tempDrivers.remove();
 			}
 		}
 		return drivers;
@@ -36,9 +41,11 @@ public class FilterServiceImpl implements FilterService {
 
 	@Override
 	public Set<User> filterByZipCode(String zip, Set<User> drivers) {
-		for (User u : drivers) {
+		tempDrivers = drivers.iterator();
+		while (tempDrivers.hasNext()) {
+			User u = (User) tempDrivers.next();
 			if (!u.gethZip().equals(zip) || !u.isActive()) {
-				drivers.remove(u);
+				tempDrivers.remove();
 			}
 		}
 		return drivers;
@@ -46,9 +53,11 @@ public class FilterServiceImpl implements FilterService {
 
 	@Override
 	public Set<User> filterByCity(String city, Set<User> drivers) {
-		for (User u : drivers) {
+		tempDrivers = drivers.iterator();
+		while (tempDrivers.hasNext()) {
+			User u = (User) tempDrivers.next();
 			if (!u.gethCity().equals(city) || !u.isActive()) {
-				drivers.remove(u);
+				tempDrivers.remove();
 			}
 		}
 		return drivers;
