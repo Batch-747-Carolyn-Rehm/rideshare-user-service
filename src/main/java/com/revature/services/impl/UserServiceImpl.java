@@ -22,7 +22,6 @@ import com.revature.services.FilterService;
 import com.revature.services.UserService;
 import com.revature.utils.UserComparator;
 
-
 /**
  * UserServiceImpl handles any additional services that need to be made before calling the
  * repository methods.
@@ -161,9 +160,8 @@ public class UserServiceImpl implements UserService {
 		if (distanceCache.containsKey(currentUser.getUserId())) {
 			// Set totalDrivers to list from cache
 			totalDrivers = new HashSet<User>(distanceCache.get(currentUser.getUserId()));
-			
 		} else {
-			// Pull from DB, run through distanceMatrix, add to cache
+			// Pull from DB, run through getDistance, add to cache
 			List<User> allDrivers = getActiveDrivers();
 			
 			try {
@@ -194,6 +192,7 @@ public class UserServiceImpl implements UserService {
 					}
 				}
 			} catch (ApiException | InterruptedException | IOException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} 

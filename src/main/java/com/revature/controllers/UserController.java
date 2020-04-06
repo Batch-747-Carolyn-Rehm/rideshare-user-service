@@ -70,65 +70,9 @@ public class UserController {
 
 	@Autowired
 	private FilterService fs;
-	
 	private ObjectMapper mapper = new ObjectMapper();
 	
-	/**
-	 * HTTP GET method (/users)
-	 * 
-	 * @param isDriver represents if the user is a driver or rider.
-	 * @param username represents the user's username.
-	 * @param location represents the batch's location.
-	 * @return A list of all the users, users by is-driver, user by username and users by is-driver and location.
-	 */
-	
-	
-	/*@ApiOperation(value="Returns user drivers", tags= {"User"})
-	@GetMapping
-	public List<User> getActiveDrivers() {
-		return us.getActiveDrivers();
-	}*/
-	
-	
-//	@ApiOperation(value="Returns user drivers", tags= {"User"})
-//	@GetMapping("/driver/{address}")
-//	public List <User> getTopFiveDrivers(@PathVariable("address")String address) throws ApiException, InterruptedException, IOException {
-//		//List<User> aps =  new ArrayList<User>();
-//		System.out.println(address);
-//		List<String> destinationList = new ArrayList<String>();
-//		String [] origins = {address};
-////		
-//	    Map<String, User> topfive = new HashMap<String, User>();
-////		
-//		for(User d : us.getActiveDrivers()) {
-////			
-//			String add = d.gethAddress();
-//			String city = d.gethCity();
-//			String state = d.gethState();
-//			
-//			String fullAdd = add + ", " + city + ", " + state;
-//			
-//			destinationList.add(fullAdd);
-////			
-//			topfive.put(fullAdd, d);
-////						
-//	}
-////		
-////		System.out.println(destinationList);
-////		
-//		String [] destinations = new String[destinationList.size()];
-//////		
-//	destinations = destinationList.toArray(destinations);
-////		
-//	return	ds.distanceMatrix(origins, destinations);
-////		
-////		
-//		//return ds.distanceMatrix();	
-//		
-//	}
-	
 	//Get Drivers by different filters
-	
 	@ApiOperation(value="Returns drivers by filter",tags= {"User"})
 	@PostMapping("/filter")
 	public ResponseEntity<List<User>> getFilteredDrivers(
@@ -192,9 +136,8 @@ public class UserController {
 	 * HTTP POST method (/users)
 	 * 
 	 * @param user represents the new User object being sent.
-	 * @return The newly created object with a 201 code.
+	 * @return The validation information with an OK status.
 	 * 
-	 * Sends custom error messages when incorrect input is used
 	 */
 	
 	@ApiOperation(value="Adds a new user", tags= {"User"})
@@ -221,15 +164,13 @@ public class UserController {
 	 * HTTP PUT method (/users)
 	 * 
 	 * @param user represents the updated User object being sent.
-	 * @return The newly updated object.
+	 * @return The validation information with an OK status.
 	 */
 	
 	@ApiOperation(value="Updates user by id", tags= {"User"})
 	@PutMapping
 	public ResponseEntity<Map> updateUser(@Valid @RequestBody User user, BindingResult result) {
-		//validating address using custom validator
 		uv.validate(user, result);
-		System.out.println("validation result is " + result);
 		
 		Map<String, String> validationInfo = new HashMap<>();
 		for (FieldError error: result.getFieldErrors()) {
