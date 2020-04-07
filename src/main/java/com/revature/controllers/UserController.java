@@ -2,6 +2,7 @@ package com.revature.controllers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -87,17 +88,17 @@ public class UserController {
 			@RequestBody Filter filters,
 			@RequestParam(name="sortBy", required=false, defaultValue="userId") String sortBy, 
 			@RequestParam(name="sortDirection", required=false, defaultValue="asc") String sortDirection,
-			@RequestParam(defaultValue="0")Integer pageNo,
-			@RequestParam(defaultValue="5")Integer pageSize
-			)
+			@RequestParam(defaultValue="1")Integer pageNo,
+			@RequestParam(defaultValue="5")Integer pageSize)
 	{
-
 		List<User> drivers = us.getFilterSortedDriver(filters, sortBy, sortDirection, pageNo, pageSize);
+		drivers = getPage(drivers, pageNo, pageSize);
+		
 		
 		if(drivers.size() > 0) {
-			return new ResponseEntity(drivers, new HttpHeaders(), HttpStatus.OK);
+			return new ResponseEntity<List<User>>(drivers, new HttpHeaders(), HttpStatus.OK);
 		} else {
-			return new ResponseEntity(drivers, new HttpHeaders(), HttpStatus.NOT_FOUND);
+			return new ResponseEntity<List<User>>(drivers, new HttpHeaders(), HttpStatus.NOT_FOUND);
 		}
 	}
 	
@@ -212,5 +213,30 @@ public class UserController {
 		return us.deleteUserById(id);
 	}
 	
+	
+	/**
+	* Provides a sublist, from given list, based on page number and size
+	* Method from: https://stackoverflow.com/questions/19688235/how-to-implement-pagination-on-a-list
+	* 
+	* @param sourcelist List to create sublist from
+	* @param pageNo represents offset of sublist from start (pageNo*pageSize from 0) 
+	* @param pageSize size of sublist
+	* @return sublist of size (pageSize) at offset (pageNo)
+	 */
+	private static <T> List<T> getPage(List<T> sourceList, int pageNo, int pageSize) {
+	    if(pageSize <= 0) {
+	        throw new IllegalArgumentException("invalid page size " + pageSize);
+	    } else if ( pageNo <= 0) {
+	    	throw new IllegalArgumentException("invalid page number " + pageNo);
+	    }
+
+	    int fromIndex = (pageNo - 1) * pageSize;
+	    if(sourceList == null || sourceList.size() < fromIndex){
+	        return Collections.emptyList();
+	    }
+
+	    // toIndex exclusive
+	    return sourceList.subList(fromIndex, Math.min(fromIndex + pageSize, sourceList.size()));
+	}
 	
 }
