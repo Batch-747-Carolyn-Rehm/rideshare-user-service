@@ -1,20 +1,14 @@
 package com.revature.services.impl;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.maps.errors.ApiException;
 import com.revature.beans.User;
-import com.revature.services.DistanceService;
 import com.revature.services.FilterService;
-import com.revature.services.UserService;
 
 /**
  * Used to filter driver results
@@ -24,11 +18,6 @@ import com.revature.services.UserService;
 @Service
 public class FilterServiceImpl implements FilterService {
 
-	@Autowired
-	private DistanceService ds;
-
-	@Autowired
-	private UserService us;
 
 	private Iterator<User> tempDrivers = null;
 	
@@ -94,7 +83,7 @@ public class FilterServiceImpl implements FilterService {
 		tempDrivers = totalDrivers.iterator();
 		while(tempDrivers.hasNext()) {
 			User u = tempDrivers.next();
-			if (!u.isActive() || u.getBatch().getBatchNumber() != batchId) {
+			if (!u.isActive() || u.getBatch().getBatchNumber() != batchId || u.getDistance() > 8046.72) {
 				tempDrivers.remove();
 			}
 		}
