@@ -107,7 +107,7 @@ public class UserController {
 		}
 		
 		List<User> drivers = us.getFilterSortedDriver(filters, sortBy, isAsc);
-		return new ResponseEntity<List<User>>(drivers, HttpStatus.OK);
+		return new ResponseEntity<List<User>>(drivers, new HttpHeaders(), HttpStatus.OK);
 		
 	}
 	

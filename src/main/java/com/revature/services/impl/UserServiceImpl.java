@@ -150,7 +150,7 @@ public class UserServiceImpl implements UserService {
 	*
 	* @param filters represents the filter criteria
 	* @param sortBy represents the criteria to sort the results
-	* @param sortDirection represents the direction to sort the results
+	* @param isAsc represents the direction to sort the results
 	* @return List of drivers that have been filtered and sorted
 	*/
 	@Override
