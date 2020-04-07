@@ -74,7 +74,12 @@ public class UserController {
 	private ObjectMapper mapper = new ObjectMapper();
 	
 	
-	//Get Drivers by different filters
+	/**
+	 * @param filters represents the filter criteria
+	 * @param sortBy represents the criteria to sort the results
+	 * @param sortDirection represents the direction to sort the results
+	 * @return response entity that contains the filtered and sorted driver results
+	 * */
 	
 	@ApiOperation(value="Returns drivers by filter",tags= {"User"})
 	@PostMapping("/filter")

@@ -2,6 +2,11 @@ package com.revature.beans;
 
 import java.util.List;
 
+/**
+ * Represents the filter criteria
+ * 
+ * @author Matthias Quintero & Michael Tsang
+ * */
 public class Filter {
 	private List<String> filterTypes;
 	private int userId;
