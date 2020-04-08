@@ -106,7 +106,7 @@ public class UserController {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid sortBy value");
 		}
 		
-		List<User> drivers = us.getFilterSortedDriver(filters, sortBy, sortDirection, pageNo, pageSize);
+		List<User> drivers = us.getFilterSortedDriver(filters, sortBy, sortDirection);
 		
 		drivers = getPage(drivers, pageNo, pageSize);
 	
