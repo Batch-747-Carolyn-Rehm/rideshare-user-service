@@ -154,7 +154,7 @@ public class UserServiceImpl implements UserService {
 	* @return List of drivers that have been filtered and sorted
 	*/
 	@Override
-	public List<User> getFilterSortedDriver(Filter filters, String sortBy, String sortDirection) {
+	public List<User> getFilterSortedDriver(Filter filters, String sortBy, String sortDirection, Integer pageNo, Integer pageSize) {
 		
 		User currentUser = getUserById(filters.getUserId());
 		

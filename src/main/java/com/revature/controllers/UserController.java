@@ -2,6 +2,8 @@ package com.revature.controllers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.maps.errors.ApiException;
@@ -78,6 +81,8 @@ public class UserController {
 	 * @param filters represents the filter criteria
 	 * @param sortBy represents the criteria to sort the results
 	 * @param sortDirection represents the direction to sort the results
+	 * @param pageNo represents the page number to load
+	 * @param pageSize represents the amount of data to display for page
 	 * @return response entity that contains the filtered and sorted driver results
 	 * */
 	
@@ -85,18 +90,27 @@ public class UserController {
 	@PostMapping("/filter")
 	public ResponseEntity<List<User>> getFilteredDrivers(
 			@RequestBody Filter filters,
-			@RequestParam(name="sortBy", required=false, defaultValue="userId") String sortBy, 
-			@RequestParam(name="sortDirection", required=false, defaultValue="asc") String sortDirection
+			@RequestParam(name="sortBy", required=false, defaultValue="distance") String sortBy, 
+			@RequestParam(name="sortDirection", required=false, defaultValue="asc") String sortDirection,
+			@RequestParam(defaultValue="1")Integer pageNo,
+			@RequestParam(defaultValue="5")Integer pageSize
 			)
 	{
-
-		List<User> drivers = us.getFilterSortedDriver(filters, sortBy, sortDirection);
+		String[] sortByValues = new String[] {"userId", "distance", "duration", "name", "seats"};
 		
-		if(drivers.size() > 0) {
-			return new ResponseEntity(drivers, new HttpHeaders(), HttpStatus.OK);
-		} else {
-			return new ResponseEntity(drivers, new HttpHeaders(), HttpStatus.NOT_FOUND);
+		if(!sortDirection.equalsIgnoreCase("asc") && !sortDirection.equalsIgnoreCase("desc")) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid sort direction value");
 		}
+		
+		if(!Arrays.asList(sortByValues).contains(sortBy.toLowerCase())) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid sortBy value");
+		}
+		
+		List<User> drivers = us.getFilterSortedDriver(filters, sortBy, sortDirection, pageNo, pageSize);
+		
+		drivers = getPage(drivers, pageNo, pageSize);
+	
+		return new ResponseEntity(drivers, new HttpHeaders(), HttpStatus.OK);
 	}
 	
 	
@@ -208,6 +222,31 @@ public class UserController {
 	public String deleteUserById(@PathVariable("id")int id) {
 		
 		return us.deleteUserById(id);
+	}
+	
+	/**
+	* Provides a sublist, from given list, based on page number and size
+	* Method from: https://stackoverflow.com/questions/19688235/how-to-implement-pagination-on-a-list
+	* 
+	* @param sourcelist List to create sublist from
+	* @param pageNo represents offset of sublist from start (pageNo*pageSize from 0) 
+	* @param pageSize size of sublist
+	* @return sublist of size (pageSize) at offset (pageNo)
+	 */
+	private static <T> List<T> getPage(List<T> sourceList, int pageNo, int pageSize) {
+	    if(pageSize <= 0) {
+	        throw new IllegalArgumentException("invalid page size " + pageSize);
+	    } else if ( pageNo <= 0) {
+	    	throw new IllegalArgumentException("invalid page number " + pageNo);
+	    }
+
+	    int fromIndex = (pageNo - 1) * pageSize;
+	    if(sourceList == null || sourceList.size() < fromIndex){
+	        return Collections.emptyList();
+	    }
+
+	    // toIndex exclusive
+	    return sourceList.subList(fromIndex, Math.min(fromIndex + pageSize, sourceList.size()));
 	}
 	
 	
