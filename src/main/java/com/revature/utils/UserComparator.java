@@ -11,7 +11,6 @@ public class UserComparator implements Comparator<User>, Serializable{
 
 	@Override
 	public int compare(User o1, User o2) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 	
@@ -37,9 +36,7 @@ public class UserComparator implements Comparator<User>, Serializable{
 			comparator = Comparator.comparing(User::getDuration);
 			break;
 		case "seats":
-			comparator = Comparator.comparing(User::getCar, (c1, c2) -> {
-				return c1.getSeatsAvailable() - c2.getSeatsAvailable();
-			});
+			comparator = Comparator.comparing(User::getCar, (c1, c2) -> c1.getSeatsAvailable() - c2.getSeatsAvailable());
 			break;
 		default:
 			comparator = Comparator.comparing(User::getDistance);
